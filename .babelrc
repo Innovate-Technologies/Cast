@@ -1,0 +1,10 @@
+{
+  "presets": [
+    "es2015-mod",
+    "stage-2"
+  ],
+  "plugins": [
+    "add-module-exports",
+    "babel-root-import"
+  ]
+}

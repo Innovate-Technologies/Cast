@@ -1,3 +1,5 @@
+require("babel-polyfill");
+require("babel-register");
 require('colors');
 var wait = require('wait.for');
 
