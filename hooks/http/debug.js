@@ -1,5 +1,5 @@
-module.exports = function (app){
-    app.get('/debug', function (req, res) {
-        res.send('works!');
+module.exports = (app) => {
+    app.get("/debug", (req, res) => {
+        res.send("works!");
     });
 };

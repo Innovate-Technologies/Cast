@@ -1,35 +1,27 @@
-var hooksPerAction = {};
-var fs = require('fs');
+let fs = require("fs");
+let hooksPerAction = {};
 
 // hooksPerAction={action:[function(options)]} //as of now no callbacks
 
-var add = function (module, func) {
+module.exports.add = function (module, func) {
     if (!hooksPerAction.hasOwnProperty(module)) {
         hooksPerAction[module] = [];
     }
     hooksPerAction[module].push(func);
 };
 
-var runHooks = function (module, options) {
-    if (!hooksPerAction.hasOwnProperty(module)) {
+module.exports.runHooks = function (module, options) {
+    if (!hooksPerAction.hasOwnProperty(module) || hooksPerAction[module].length === 0) {
         return;
     }
-    for (var id in hooksPerAction[module]) {
-        if (hooksPerAction[module].hasOwnProperty(id)) {
-            hooksPerAction[module][id](options);
-        }
+    for (let action of hooksPerAction[module]) {
+        action(options)
     }
 };
 
-var loadModules = function () {
-    var actionModules = fs.readdirSync(global.localdir + '/hooks/action');
-    for (var id in actionModules) {
-        if (actionModules.hasOwnProperty(id)) {
-            require(global.localdir + '/hooks/action/' + actionModules[id]);
-        }
+module.exports.loadModules = function () {
+    var actionModules = fs.readdirSync(global.localdir + "/hooks/action");
+    for (let module of actionModules) {
+        require(global.localdir + "/hooks/action/" + module);
     }
 };
-
-module.exports.add = add;
-module.exports.runHooks = runHooks;
-module.exports.loadModules = loadModules;
