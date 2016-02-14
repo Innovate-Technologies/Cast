@@ -62,10 +62,7 @@ let addToDir = (stream) => {
         });
     };
 
-    for (let directory of directories) {
-        sendRequestToDirectory(directory);
-    }
-
+    directories.forEach(sendRequestToDirectory)
 };
 
 let touchDir = (stream, dir) => {
