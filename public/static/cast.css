@@ -6,10 +6,10 @@
 /* Include Diavlo Light */
 @font-face {
     font-family: 'Diavlo Light';
-    src: url('https://cdn.shoutca.st/cast/css/Diavlo-Light-Regular.ttf.woff') format('woff'),
-        url('https://cdn.shoutca.st/cast/css/Diavlo-Light-Regular.ttf.svg#Diavlo-Light-Regular') format('svg'),
-        url('https://cdn.shoutca.st/cast/css/Diavlo-Light-Regular.ttf.eot'),
-        url('https://cdn.shoutca.st/cast/css/Diavlo-Light-Regular.ttf.eot?#iefix') format('embedded-opentype');
+    src: url('fonts/Diavlo-Light-Regular.ttf.woff') format('woff'),
+        url('fonts/Diavlo-Light-Regular.ttf.svg#Diavlo-Light-Regular') format('svg'),
+        url('fonts/Diavlo-Light-Regular.ttf.eot'),
+        url('fonts/Diavlo-Light-Regular.ttf.eot?#iefix') format('embedded-opentype');
     font-weight: normal;
     font-style: normal;
 }
