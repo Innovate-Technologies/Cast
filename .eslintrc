@@ -2,7 +2,7 @@
     "parser": "babel-eslint",
     "rules": {
         // Clean code and best practices
-        //"indent": [2, 4, { "SwitchCase": 1 }],
+        "indent": [2, 4, { "SwitchCase": 1 }],
         "quotes": [2, "double", "avoid-escape"],
         "linebreak-style": [2, "unix"],
         "semi": 0,
@@ -100,8 +100,7 @@
 
     // Globals
     "globals": {
-        "requireFromRoot": true,
-        "log": true,
+        "streams": true,
         "config": true
     },
 
