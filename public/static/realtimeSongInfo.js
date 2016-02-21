@@ -7,10 +7,8 @@ socket.on("metadata", function onMetadataUpdate(msg) {
         metadataElement.textContent = decodeURIComponent(msg.song);
     }
     var djnameElement = document.getElementById("djname-" + msg.stream);
-    if (djnameElement !== null) {
-        if (msg.djname) {
-            djnameElement.textContent = decodeURIComponent(msg.djname);
-        }
+    if (msg.djname && djnameElement !== null) {
+        djnameElement.textContent = decodeURIComponent(msg.djname);
     }
 });
 
