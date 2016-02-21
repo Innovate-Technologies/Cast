@@ -1,5 +1,5 @@
+import fs from "fs"
 let app = require("express")()
-let fs = require("fs")
 
 global.io = require("socket.io")
 
@@ -15,8 +15,8 @@ if (config.httpPort !== 0) {
     global.io.attach(http)
 }
 
-let streamOutput = require("../streams/httphandler.js")
-let streamInput = require("../streams/inputhandler.js")
+import streamOutput from "../streams/httphandler.js"
+import streamInput from "../streams/inputhandler.js"
 
 if (config.trustProxy) {
     app.enable("trust proxy");
