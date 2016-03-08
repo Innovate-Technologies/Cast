@@ -23,8 +23,8 @@ if (config.trustProxy) {
 }
 
 app.use((req, res, next) => {
-    res.setHeader("X-Powered-By", "Cast 1.0")
-    res.setHeader("Server", "Cast/1.0")
+    res.setHeader("X-Powered-By", `Cast ${global.cast.version}`)
+    res.setHeader("Server", `Cast/${global.cast.version}`)
     next()
 })
 
