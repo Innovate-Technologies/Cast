@@ -27,8 +27,7 @@ try {
 
 var loadCast = () => {
     global.app = require("./intern/HTTP/server.js");
-    global.hooks = require("./hooks/hooks.js");
-    global.hooks.loadModules();
+    require("./hooks/hooks.js"); // load in hooks
 };
 
 if (global.config.startUpScript) { // run a script before going on eg. to load the configuration from a network disk

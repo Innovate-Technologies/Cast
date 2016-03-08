@@ -106,8 +106,8 @@ var removeFromDir = (stream) => {
     }
 };
 
-global.hooks.add("addStream", addToDir);
-global.hooks.add("removeStream", removeFromDir);
-global.hooks.add("metadata", touchDirForStream);
-global.hooks.add("listenerTunedIn", touchDirForStream);
-global.hooks.add("listenerTunedOut", touchDirForStream);
+global.events.on("addStream", addToDir);
+global.events.on("removeStream", removeFromDir);
+global.events.on("metadata", touchDirForStream);
+global.events.on("listenerTunedIn", touchDirForStream);
+global.events.on("listenerTunedOut", touchDirForStream);

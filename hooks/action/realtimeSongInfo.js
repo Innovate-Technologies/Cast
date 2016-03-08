@@ -1,8 +1,8 @@
-global.hooks.add("metadata", (meta) => {
+global.events.on("metadata", (meta) => {
     global.io.emit("metadata", meta);
 });
 
-global.hooks.add("listenerTunedIn", (list) => {
+global.events.on("listenerTunedIn", (list) => {
     setTimeout(() => {
         global.io.emit("listenerCountChange", {
             stream: list.stream,
@@ -11,7 +11,7 @@ global.hooks.add("listenerTunedIn", (list) => {
     }, 100);
 });
 
-global.hooks.add("listenerTunedOut", (list) => {
+global.events.on("listenerTunedOut", (list) => {
     setTimeout(() => {
         global.io.emit("listenerCountChange", {
             stream: list.stream,

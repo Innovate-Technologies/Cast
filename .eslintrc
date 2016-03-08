@@ -101,7 +101,8 @@
     "globals": {
         "streams": true,
         "config": true,
-        "maxmind": true
+        "maxmind": true,
+        "events": true
     },
 
     // Extend the default recommended configuration
