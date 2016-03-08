@@ -1,78 +1,72 @@
-var geojson=require('geojson')
+import geojson from "geojson"
 
-module.exports = function(app) {
-    
-    app.get("/api/version", function(req, res) {
-        res.json({version:global.cast.version})
+module.exports = (app) => {
+
+    app.get("/api/version", (req, res) => {
+        res.json({version: global.cast.version})
     })
 
-    app.get("/api/*/past-metadata", function(req, res) {
-        res.json(global.streams.getPastMedatada(req.params[0]) || {})
+    app.get("/api/:stream/past-metadata", (req, res) => {
+        res.json(global.streams.getPastMedatada(req.params.stream) || {})
     })
-    
-    app.get("/api/*/current-metadata", function(req, res) {
-        res.json(global.streams.getStreamMetadata(req.params[0]))
-    })
-    
-    app.get("/api/*/statistics", function(req, res) {
-        res.send('Soon available')
 
+    app.get("/api/:stream/current-metadata", (req, res) => {
+        res.json(global.streams.getStreamMetadata(req.params.stream))
     })
-    
-    app.get("/api/list-active-streams", function(req, res) {
+
+    app.get("/api/list-active-streams", (req, res) => {
         res.json(global.streams.getActiveStreams())
     })
-    
-    app.get("/api/*/*/listeners",function(req, res) {
-        if (req.params[1]!==global.config.apikey){
-            res.status(400).json({error:"Invalid API key"})
+
+    app.get("/api/:stream/:key/listeners", (req, res) => {
+        if (req.params.key !== global.config.apikey) {
+            res.status(400).json({error: "Invalid API key"})
             return
         }
-        res.json(global.streams.getListeners(req.params[0]))
+        res.json(global.streams.getListeners(req.params.stream))
     })
-    
-    
-    app.get("/api/*/*/unique-listeners",function(req, res) {
-        if (req.params[1]!==global.config.apikey){
-            res.status(400).json({error:"Invalid API key"})
+
+
+    app.get("/api/:stream/:key/unique-listeners", (req, res) => {
+        if (req.params.key !== global.config.apikey) {
+            res.status(400).json({error: "Invalid API key"})
             return
         }
-        res.json(global.streams.getUniqueListeners(req.params[0]))
+        res.json(global.streams.getUniqueListeners(req.params.stream))
     })
-    
-    app.get("/api/*/*/listenersmap",function(req, res) {
-        if (req.params[1]!==global.config.apikey){
-            return res.status(400).json({error:"Invalid API key"})
+
+    app.get("/api/:stream/:key/listenersmap", (req, res) => {
+        if (req.params.key !== global.config.apikey) {
+            return res.status(400).json({error: "Invalid API key"})
         }
-        if (typeof global.config.geoservices === "undefined" || !global.config.geoservices.enabled){
+        if (!config.geoservices || config.geoservices.enabled) {
             return res.status(500).json({error: "GeoServices is disabled"})
         }
-        
-        var listeners=global.streams.getListeners(req.params[0])
-        
-        var geoArray=[]
-        
-        for (var id in listeners){
-            if (typeof listeners[id].location !== "undefined"){
-                geoArray.push({name: listeners[id].client || listeners[id].ip, ip:listeners[id].ip, latitude:listeners[id].location.latitude,longitude:listeners[id].location.longitude})
+
+        var listeners = global.streams.getListeners(req.params.stream)
+
+        var geoArray = []
+
+        for (var id in listeners) {
+            if (listeners[id].location) {
+                geoArray.push({name: listeners[id].client || listeners[id].ip, ip: listeners[id].ip, latitude: listeners[id].location.latitude, longitude: listeners[id].location.longitude})
             }
         }
         res.setHeader("Content-Type", "application/json");
         res.send(geojson.parse(geoArray, {Point: ["latitude", "longitude"]}))
     })
-    
-    app.post("/api/*/*/end",function(req, res) {
-        if (req.params[1]!==global.config.apikey){
-            res.status(400).json({error:"Invalid API key"})
+
+    app.post("/api/:key/:stream/end", (req, res) => {
+        if (req.params.key !== global.config.apikey) {
+            res.status(400).json({error: "Invalid API key"})
             return
         }
-        if (!global.streams.isStreamInUse(req.params[0])){
-            res.status(400).json({error:"Stream is not in use"})
+        if (!global.streams.isStreamInUse(req.params.stream)) {
+            res.status(400).json({error: "Stream is not in use"})
             return
         }
-        global.streams.endStream(req.params[0])
-        res.json({result:"okay"})
+        global.streams.endStream(req.params.stream)
+        res.json({result: "okay"})
     })
 
 }
-
