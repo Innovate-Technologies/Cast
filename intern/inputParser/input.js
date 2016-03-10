@@ -1,9 +1,9 @@
-var SHOUTcast=require("./shoutcast.js")
-var metadata=require("./metadata.js")
+import SHOUTcast from "./shoutcast.js"
+import metadata from "./metadata.js"
 
-var SHOUTcastListener=function(port){
+var SHOUTcastListener = (port) => {
     metadata.listenOn(port)
-    SHOUTcast.listenOn(port+1)
+    SHOUTcast.listenOn(port + 1)
 }
 
-module.exports.SHOUTcastListener=SHOUTcastListener
+module.exports.SHOUTcastListener = SHOUTcastListener
