@@ -1,25 +1,25 @@
 import tcp from "net"
-if (!global.streams) {
+if (!streams) {
     global.streams = require("../streams/streams.js")
 }
 
-let listener = tcp.createServer((c) => {
-    let veriefiedPassword = false;
+const listener = tcp.createServer((c) => {
+    let verifiedPasword = false;
     let gotICY = true; // set true to not parse the info if the encoder refuses to wait on our response
     let icy = {}
     let startedPipe = true; // set true to not parse the info if the encoder refuses to wait on our response
     let stream;
     c.on("data", (data) => {
-        if (!veriefiedPassword) {
-            veriefiedPassword = true
+        if (!verifiedPasword) {
+            verifiedPasword = true
             let input = data.toString("utf-8").replace("\r\n", "\n").split("\n");
-            if (!global.streams.streamPasswords.hasOwnProperty(input[0])) {
+            if (!streams.streamPasswords.hasOwnProperty(input[0])) {
                 c.write("invalid password\n")
                 c.end()
                 return
             }
-            stream = global.streams.streamPasswords[input[0]]
-            if (global.streams.isStreamInUse(stream)) {
+            stream = streams.streamPasswords[input[0]]
+            if (streams.isStreamInUse(stream)) {
                 c.write("Other source is connected\n")
                 c.end()
                 return
@@ -51,7 +51,7 @@ let listener = tcp.createServer((c) => {
                 // if your encoder is this shitty (Nicecast) it probably uses mpeg
                 icy["content-type"] = "audio/mpeg"
             }
-            global.streams.addStream(c, {
+            streams.addStream(c, {
                 name: icy["icy-name"],
                 stream: stream,
                 type: icy["content-type"],

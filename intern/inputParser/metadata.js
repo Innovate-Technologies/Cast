@@ -1,6 +1,6 @@
 let app = require("express")()
 
-module.exports.istenOn = (port) => {
+export const listenOn = (port) => {
     require("http").createServer(app).listen(port)
 }
 
@@ -14,7 +14,7 @@ app.get("/admin.cgi", (req, res) => {
         return
     }
 
-    let stream = streams.streamPasswords[req.query.pass]
+    const stream = streams.streamPasswords[req.query.pass]
 
     if (req.query.mode === "updinfo") {
 

@@ -1,6 +1,6 @@
 import geojson from "geojson"
 
-module.exports = (app) => {
+export default (app) => {
 
     app.get("/api/version", (req, res) => {
         res.json({version: global.cast.version})

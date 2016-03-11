@@ -1,5 +1,5 @@
 let rest = require("restler");
-let directories = global.config.directories.Icecast;
+let directories = config.directories.Icecast;
 let dirInfo = {}; // { stream: { dirurl: info } }
 
 let sendRequest = (host, data, callback) => {
@@ -20,13 +20,13 @@ let sendRequest = (host, data, callback) => {
 };
 
 let addToDir = (stream) => {
-    let info = global.streams.getStreamConf(stream);
+    let info = streams.getStreamConf(stream);
     let hostname;
 
-    if (global.config.hostname.split(":").length === 3) { // if a non standard port is used
-        hostname = global.config.hostname;
+    if (config.hostname.split(":").length === 3) { // if a non standard port is used
+        hostname = config.hostname;
     } else {
-        hostname = global.config.hostname + ":" + ((global.config.hostname.indexOf("https://") !== -1) ? 443 : 80);
+        hostname = config.hostname + ":" + ((config.hostname.indexOf("https://") !== -1) ? 443 : 80);
     }
 
     var sendRequestToDirectory = (directory) => {
@@ -73,8 +73,8 @@ let touchDir = (stream, dir) => {
     sendRequest(dir, {
         action: "touch",
         sid: dirInfo[stream][dir].sid,
-        st: global.streams.getStreamMetadata(stream).song || "",
-        listeners: global.streams.numberOfListerners(stream),
+        st: streams.getStreamMetadata(stream).song || "",
+        listeners: streams.numberOfListerners(stream),
     }, (err) => {
         if (err) {
             return console.error(err);
@@ -106,8 +106,8 @@ var removeFromDir = (stream) => {
     }
 };
 
-global.events.on("addStream", addToDir);
-global.events.on("removeStream", removeFromDir);
-global.events.on("metadata", touchDirForStream);
-global.events.on("listenerTunedIn", touchDirForStream);
-global.events.on("listenerTunedOut", touchDirForStream);
+events.on("addStream", addToDir);
+events.on("removeStream", removeFromDir);
+events.on("metadata", touchDirForStream);
+events.on("listenerTunedIn", touchDirForStream);
+events.on("listenerTunedOut", touchDirForStream);
