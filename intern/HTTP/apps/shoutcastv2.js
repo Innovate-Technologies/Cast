@@ -110,6 +110,63 @@ module.exports = function(app) {
 
     })
 
+    app.get("/stats", function(req, res) {
+        var stream = sidToStream(req.query.sid)
+        var mode = 'xml'
+        if (req.query.json == 1) {
+            mode = 'json'
+        }
+        var generalInfo = {
+            "id": id, // again we should assign numbers
+            "currentlisteners": global.streams.numberOfListerners(stream),
+            "peaklisteners": global.streams.numberOfListerners(stream), //Shall we record this?
+            "maxlisteners": 9999999, //not again...
+            "uniquelisteners": global.streams.numberOfUniqueListerners(stream),
+            "averagetime": 0, //Again, what is this?
+            "servergenre": global.streams.getStreamConf(stream).genre,
+            "servergenre2": "", //We'll probably never support this
+            "servergenre3": "",
+            "servergenre4": "",
+            "servergenre5": "",
+            "serverurl": global.streams.getStreamConf(stream).url || "",
+            "servertitle": global.streams.getStreamConf(stream).name || "",
+            "songtitle": global.streams.getStreamMetadata(stream).song || "",
+            "streamhits": 0, //What if my server is top 40?? got it?
+            "streamstatus": 1, //Yeah DUH
+            "backupstatus": 0, //We got no fallback
+            "streamlisted": 1, //Unable to tell with our YP mechanism
+            "streamlistederror": 200, //idem
+            "streampath": "/streams/" + stream,
+            "streamuptime": 0, //not logged
+            "bitrate": global.streams.getStreamConf(stream).bitrate || 0,
+            "samplerate": 44100, //not logged
+            "content": global.streams.getStreamConf(stream).type || "audio/mpeg"
+        }
+
+        if (mode === 'json') {
+            res.json(generalInfo)
+            return
+        }
+
+        var streamInfoXML = []
+
+        for (var id in generalInfo) {
+            if (generalInfo.hasOwnProperty(id)) {
+                var obj = {}
+                obj[id.toUpperCase()] = generalInfo[id]
+                streamInfoXML.push(obj)
+            }
+        }
+
+        //TO DO: look up how we can add multiple stream tags here
+        res.setHeader("Content-Type", "text/xml")
+        res.send(xml({
+            SHOUTCASTSERVER: streamInfoXML
+
+        }))
+
+    })
+
     app.get("/7.html", function(req, res) { //Personal option: WHY USE THIS????
         var stream = sidToStream(req.query.sid)
             //CURRENTLISTENERS,STREAMSTATUS,PEAKLISTENERS,MAXLISTENERS,UNIQUELISTENERS,BITRATE,SONGTITLE
@@ -120,12 +177,12 @@ module.exports = function(app) {
         }
     })
 
-    app.get("/played*", function (req,res) {
+    app.get("/played*", function(req, res) {
         streamAdminSongHistory(req, res)
     })
 
     app.get("/admin.cgi", auth.connect(basic), function(req, res) {
-        if (typeof req.query.page === "undefined" || typeof req.query.mode === "undefined") {
+        if (typeof req.query.mode === "undefined") {
             res.status(400).send('This is only for API calls.')
             return
         }
@@ -140,8 +197,7 @@ module.exports = function(app) {
                 streamAdminSongHistory(req, res)
                 break;
             default:
-                res.status(400).send('Not supported')
-                    // code
+                streamAdminOverview(req, res)
         }
     })
 
@@ -153,13 +209,168 @@ var sidToStream = function(sid) {
     if (typeof sid === "undefined") {
         stream = global.streams.primaryStream
     } else if (!isNaN(parseInt(sid))) {
-        stream = global.streams.streamID[parseInt(sid)]
+        stream = global.streams.streamID[parseInt(sid) - 1]
     } else {
         stream = sid
     }
     return stream
 }
 
+var streamAdminOverview = function(req, res) {
+
+    var stream = sidToStream(req.query.sid)
+    var streamStatus = 0
+    if (global.streams.isStreamInUse(stream)) {
+        var out = {
+            "currentlisteners": global.streams.numberOfListerners(stream) || 0,
+            "peaklisteners": global.streams.numberOfListerners(stream) || 0,
+            "maxlisteners": 9999,
+            "uniquelisteners": global.streams.numberOfUniqueListerners(stream) || 0,
+            "averagetime": 0,
+            "servergenre": global.streams.getStreamConf(stream).genre || "",
+            "servergenre2": "",
+            "servergenre3": "",
+            "servergenre4": "",
+            "servergenre5": "",
+            "serverurl": global.streams.getStreamConf(stream).url || "",
+            "servertitle": global.streams.getStreamConf(stream).name || "",
+            "songtitle": global.streams.getStreamMetadata(stream).song || "",
+            "streamhits": 0,
+            "streamstatus": 1,
+            "backupstatus": 0,
+            "streamlisted": 0, //We never can know
+            "streamlistederror": 200,
+            "streamsource": "127.0.0.1",
+            "streampath": "/streams/" + stream,
+            "streamuptime": 2,
+            "bitrate": global.streams.getStreamConf(stream).bitrate,
+            "content": global.streams.getStreamConf(stream).type,
+            "version": global.cast.version + " (V8 (Node.JS))"
+        }
+    } else {
+        var out = {
+            "currentlisteners": 0,
+            "peaklisteners": 0,
+            "maxlisteners": 9999,
+            "uniquelisteners": 0,
+            "averagetime": 0,
+            "servergenre": "",
+            "servergenre2": "",
+            "servergenre3": "",
+            "servergenre4": "",
+            "servergenre5": "",
+            "serverurl": "",
+            "servertitle": "",
+            "songtitle": "",
+            "streamhits": 0,
+            "streamstatus": 0,
+            "backupstatus": 0,
+            "streamlisted": 0, //We never can know
+            "streamlistederror": 200,
+            "streamsource": "127.0.0.1",
+            "streampath": "/streams/" + stream,
+            "streamuptime": 2,
+            "bitrate": 0,
+            "content": "",
+            "version": global.cast.version + " (V8 (Node.JS))"
+        }
+    }
+    var pastSongs = global.streams.getPastMedatada(stream)
+    out.songs = []
+
+    for (var id in pastSongs) {
+        if (pastSongs.hasOwnProperty(id)) {
+            out.songs.push({
+                "playedat": pastSongs[id].time,
+                "title": pastSongs[id].song
+            })
+        }
+    }
+
+    var listeners = global.streams.getListeners(stream)
+
+    out.listeners = []
+
+    for (var id in listeners) {
+        if (listeners.hasOwnProperty(id)) {
+            out.listeners.push({
+                "hostname": listeners[id].ip,
+                "useragent": listeners[id].client,
+                "connecttime": (Math.round((new Date()).getTime() / 1000) - listeners[id].starttime),
+                "uid": id,
+                "type": "",
+                "referer": "",
+                "xff": "",
+                "grid": "-1",
+                "triggers": "0"
+            })
+        }
+    }
+
+    if (req.query.mode == "viewjson") {
+        res.json(out)
+        return
+    }
+
+    var outXML = []
+
+    for (var id in out) {
+        if (out.hasOwnProperty(id)) {
+            var obj = {}
+            if (id !== "listeners" && id !== "songs") {
+                obj[id.toUpperCase()] = out[id]
+                outXML.push(obj)
+            }
+        }
+    }
+
+    var xmlListeners = []
+
+    for (var id in out.listeners) {
+        if (out.listeners.hasOwnProperty(id)) {
+            var lstrInfo = []
+            for (var objid in out.listeners[id]) {
+                var obj = {}
+                obj[objid.toUpperCase()] = out.listeners[id][objid]
+                lstrInfo.push(obj)
+            }
+            xmlListeners.push({
+                LISTENER: lstrInfo
+            })
+        }
+    }
+
+    outXML.push({
+        LISTENERS: xmlListeners
+    })
+
+    var xmlSongs = []
+
+    for (var id in out.songs) {
+        if (out.songs.hasOwnProperty(id)) {
+            var songInfo = [{}]
+            for (var objid in out.songs[id]) {
+                var obj = {}
+                obj[objid.toUpperCase()] = out.songs[id][objid]
+                songInfo.push(obj)
+            }
+
+            xmlSongs.push({
+                SONG: songInfo
+            })
+        }
+    }
+
+    outXML.push({
+        SONGHISTORY: xmlSongs
+    })
+
+    res.setHeader("Content-Type", "text/xml")
+    res.send(xml({
+        SHOUTCASTSERVER: outXML
+    }))
+
+}
 
 var streamAdminStats = function(req, res) {
 
@@ -178,7 +389,7 @@ var streamAdminStats = function(req, res) {
             "servergenre4": "",
             "servergenre5": "",
             "serverurl": global.streams.getStreamConf(stream).url || "",
-            "servertitle": global.streams.getStreamConf(stream).title || "",
+            "servertitle": global.streams.getStreamConf(stream).name || "",
             "songtitle": global.streams.getStreamMetadata(stream).song || "",
             "streamhits": 0,
             "streamstatus": 1,
@@ -310,7 +521,7 @@ var streamAdminSongHistory = function(req, res) {
         }
     }
 
-     if (req.query.mode == "viewjson" || req.query.type == "json") {
+    if (req.query.mode == "viewjson" || req.query.type == "json") {
         res.json(out)
         return
     }
