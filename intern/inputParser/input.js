@@ -1,7 +1,7 @@
 import SHOUTcast from "./shoutcast.js"
 import metadata from "./metadata.js"
 
-export const SHOUTcastListener = (port) => {
+export const shoutcastListener = (port) => {
     metadata.listenOn(port)
     SHOUTcast.listenOn(port + 1)
 }

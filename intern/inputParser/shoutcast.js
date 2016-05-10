@@ -24,7 +24,7 @@ const listener = tcp.createServer((c) => {
                 c.end()
                 return
             }
-            c.write("OK2\r\nicy-caps:11\n\n");
+            c.write("OK2\r\nicy-caps:11\r\n\r\n");
 
             if (input.length > 1) {
                 icy = parseICY(input)

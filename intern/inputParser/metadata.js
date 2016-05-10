@@ -1,4 +1,4 @@
-let app = require("express")()
+const app = require("express")()
 
 export const listenOn = (port) => {
     require("http").createServer(app).listen(port)
