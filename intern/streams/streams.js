@@ -1,48 +1,49 @@
-var stream = require('stream')
-var _ = require("underscore")
-if (typeof global.config.geoservices !== "undefined" && global.config.geoservices.enabled && typeof global.maxmind === "undefined") {
+import stream from "stream"
+import _ from "underscore"
+
+if (global.config.geoservices && global.config.geoservices.enabled && !global.maxmind) {
     global.maxmind = require("maxmind")
     if (!global.maxmind.init(global.config.geoservices.maxmindDatabase)) {
         console.log("Error loading Maxmind Database")
     }
 }
 
-var configFileInfo = {} //{streamname:conf}
-var streamID = {} //id:streamname
-var inputStreams = {} //{streamname:stream}
-var streams = {} //{streamname:stream}
-var streamConf = {} //{streamname:{conf}}
-var streamPasswords = {} //{pass:Stream}
-var streamMetadata = {} //{streamname:{Meta}}
-var streamPastMetadata = {} //{streamname:[{Meta}]}
-var streamListeners = {} //{stream:[{listener}]}
-var streamPreBuffer = {} //{stream:prebuffer}
-var rateLimitBuffer = {} //{stream:[buffers]}
-var rateLimitingIsEnabled = false
-var primaryStream = ""
-var latestListenerID = {} //{stream:id}
+let configFileInfo = {} // {streamname:conf}
+let streamID = {} // id:streamname
+let inputStreams = {} // {streamname:stream}
+let streams = {} // {streamname:stream}
+let streamConf = {} // {streamname:{conf}}
+let streamPasswords = {} // {pass:Stream}
+let streamMetadata = {} // {streamname:{Meta}}
+let streamPastMetadata = {} // {streamname:[{Meta}]}
+let streamListeners = {} // {stream:[{listener}]}
+let streamPreBuffer = {} // {stream:prebuffer}
+let rateLimitBuffer = {} // {stream:[buffers]}
+let rateLimitingIsEnabled = false
+let primaryStream = ""
+let latestListenerID = {} // {stream:id}
 
 if (global.config.hls) {
-    var hlsBuffer = {} //{stream:[buffers]}
-    var hlsPool = {} //{stream:{unixtime:song data}}
-    var hlsDeleteCount = {} //{stream:count}
-    var hlsLastHit = {} //{stream:{id:unixtime}}
-    var hlsIndexes = {} //{stream:[indexes]}
-    setInterval(function(){
-        var now = Math.round((new Date()).getTime() / 1000)
-        for (var id in streams){
-            if (streams.hasOwnProperty(id)){
-                var listeners = getListeners(id)
-                for (var lid in listeners) {
+    var hlsBuffer = {} // {stream:[buffers]}
+    var hlsPool = {} // {stream:{unixtime:song data}}
+    var hlsDeleteCount = {} // {stream:count}
+    var hlsLastHit = {} // {stream:{id:unixtime}}
+    var hlsIndexes = {} // {stream:[indexes]}
+    setInterval(() => {
+        let now = Math.round((new Date()).getTime() / 1000)
+        for (let id in streams) {
+            if (streams.hasOwnProperty(id)) {
+                let listeners = getListeners(id)
+                for (let lid in listeners) {
                     if (listeners.hasOwnProperty(lid)) {
                         if (listeners[lid].hls) {
                             if (!hlsLastHit[id]) {
                                 hlsLastHit[id] = {}
                             }
-                            if (!hlsLastHit[id][listeners[lid].id]){
+                            if (!hlsLastHit[id][listeners[lid].id]) {
                                 hlsLastHit[id][listeners[lid].id] = now
                             }
-                            if (hlsLastHit[id][listeners[lid].id] < now-20 ){
+                            if (hlsLastHit[id][listeners[lid].id] < now - 20 ) {
                                 listenerTunedOut(id, listeners[lid].id)
                             }
                         }
@@ -53,12 +54,11 @@ if (global.config.hls) {
     }, 1000)
 }
 
-var streamExists = function(streamname) {
+const streamExists = function (streamname) {
     if (streams.hasOwnProperty(streamname) && stream[streamname] !== null) {
         return true
-    } else {
-        return false
     }
+    return false
 }
 
 
@@ -70,27 +70,27 @@ var streamExists = function(streamname) {
         type: "Audio type in file Content-Type format eg. audio/mpeg"
     }
 */
-var addStream = function(inputStream, conf) {
-    conf.name = conf.name || 'Not available';
+const addStream = function (inputStream, conf) {
+    conf.name = conf.name || "Not available";
     streamPreBuffer[conf.stream] = []
 
-    var throttleStream = stream.PassThrough();
-    throttleStream.setMaxListeners(10000); //set soft max to prevent leaks
+    var throttleStream = new stream.PassThrough();
+    throttleStream.setMaxListeners(10000); // set soft max to prevent leaks
     streams[conf.stream] = throttleStream
     streamConf[conf.stream] = conf
     inputStreams[conf.stream] = inputStream
 
-    if (typeof global.config.rateLimiting === "undefined" || global.config.rateLimiting) {
+    if (global.config.rateLimiting) {
         rateLimitingIsEnabled = true
 
-        inputStreams[conf.stream].on("data", function(chunk) {
-            if (typeof rateLimitBuffer[conf.stream] === "undefined") {
+        inputStreams[conf.stream].on("data", (chunk) => {
+            if (!rateLimitBuffer[conf.stream]) {
                 rateLimitBuffer[conf.stream] = []
             }
             rateLimitBuffer[conf.stream].push(chunk)
         });
 
-        var rateLimitInterval = setInterval(function() {
+        var rateLimitInterval = setInterval(() => {
             throttleStream.write(Buffer.concat(rateLimitBuffer[conf.stream]))
             rateLimitBuffer[conf.stream] = []
         }, 500)
@@ -98,32 +98,32 @@ var addStream = function(inputStream, conf) {
         inputStream.pipe(throttleStream);
     }
 
-    if (global.config.hls){
+    if (global.config.hls) {
         hlsDeleteCount[conf.stream] = 0
 
-        inputStreams[conf.stream].on("data", function(chunk) {
+        inputStreams[conf.stream].on("data", (chunk) => {
             if (typeof hlsBuffer[conf.stream] === "undefined") {
                 hlsBuffer[conf.stream] = []
             }
             hlsBuffer[conf.stream].push(chunk)
         });
-        var hlsInterval = setInterval(function() {
-            var now = new Date().getTime()
-            if (!hlsPool[conf.stream]){
+        var hlsInterval = setInterval(() => {
+            let now = new Date().getTime()
+            if (!hlsPool[conf.stream]) {
                 hlsPool[conf.stream] = {}
             }
-            if (!hlsIndexes[conf.stream]){
+            if (!hlsIndexes[conf.stream]) {
                 hlsIndexes[conf.stream] = []
             }
-            hlsPool[conf.stream][now]=(Buffer.concat(hlsBuffer[conf.stream]))
+            hlsPool[conf.stream][now] = Buffer.concat(hlsBuffer[conf.stream])
             hlsBuffer[conf.stream] = []
             hlsIndexes[conf.stream].push(now)
-            if (hlsIndexes[conf.stream].length>7){
-                hlsIndexes[conf.stream] = hlsIndexes[conf.stream].slice(1,hlsIndexes.length)
+            if (hlsIndexes[conf.stream].length > 7) {
+                hlsIndexes[conf.stream] = hlsIndexes[conf.stream].slice(1, hlsIndexes.length)
                 hlsDeleteCount[conf.stream]++
             }
-            for (var id in hlsPool[conf.stream]){
-                if (id < now - (5000*20)){
+            for (var id in hlsPool[conf.stream]) {
+                if (id < now - (5000 * 20)) {
                     delete hlsPool[conf.stream][id]
                 }
             }
@@ -131,10 +131,10 @@ var addStream = function(inputStream, conf) {
     }
 
 
-    throttleStream.on("data", function(chunk) {
-        var newPreBuffer = []
-        var currentLength = streamPreBuffer[conf.stream].length
-        for (var i = (rateLimitingIsEnabled ? 10 : 100); i > 0; i--) {
+    throttleStream.on("data", (chunk) => {
+        let newPreBuffer = []
+        let currentLength = streamPreBuffer[conf.stream].length
+        for (let i = (rateLimitingIsEnabled ? 10 : 100); i > 0; i--) {
             if (streamPreBuffer[conf.stream].hasOwnProperty(currentLength - i)) {
                 newPreBuffer.push(streamPreBuffer[conf.stream][currentLength - i])
             }
@@ -143,7 +143,7 @@ var addStream = function(inputStream, conf) {
         streamPreBuffer[conf.stream] = newPreBuffer
     })
 
-    inputStreams[conf.stream].on("end", function(chunk) {
+    inputStreams[conf.stream].on("end", () => {
         streamPreBuffer[conf.stream] = ""
         if (rateLimitingIsEnabled) {
             rateLimitBuffer[conf.stream] = []
@@ -151,91 +151,85 @@ var addStream = function(inputStream, conf) {
             clearInterval(hlsInterval)
         }
     })
-
-    inputStreams[conf.stream].on("error", function(chunk) {
-
-    })
-
-    global.hooks.runHooks("addStream", conf.stream)
+    events.emit("addStream", conf.stream)
 
 }
 
-var getStream = function(streamname) {
-    return streams[streamname]
+const getStream = (streamName) => {
+    return streams[streamName]
 }
 
-var getStreamConf = function(streamname) {
+const getStreamConf = (streamname) => {
     return streamConf[streamname]
 }
 
-var removeStream = function(stream) {
-    streams = _.omit(streams, stream)
-    streamConf = _.omit(streamConf, stream)
-    streamMetadata = _.omit(streamMetadata, stream)
-    streamListeners = _.omit(streamListeners, stream)
-    global.hooks.runHooks('removeStream', stream)
+const removeStream = (streamName) => {
+    streams = _.omit(streams, streamName)
+    streamConf = _.omit(streamConf, streamName)
+    streamMetadata = _.omit(streamMetadata, streamName)
+    streamListeners = _.omit(streamListeners, streamName)
+    events.emit("removeStream", streamName)
 }
 
-var isStreamInUse = function(stream) {
-    return streams.hasOwnProperty(stream)
+const isStreamInUse = (streamName) => {
+    return streams.hasOwnProperty(streamName)
 }
 
-var getStreamMetadata = function(stream) {
-    return streamMetadata[stream] || {}
+const getStreamMetadata = (streamName) => {
+    return streamMetadata[streamName] || {}
 }
 
-var setStreamMetadata = function(stream, data) {
+const setStreamMetadata = (streamName, data) => {
     data.time = Math.round((new Date()).getTime() / 1000)
-    streamMetadata[stream] = data
-    if (typeof streamPastMetadata[stream] === "undefined") {
-        streamPastMetadata[stream] = [data]
+    streamMetadata[streamName] = data
+    if (typeof streamPastMetadata[streamName] === "undefined") {
+        streamPastMetadata[streamName] = [data]
     } else {
-        var newMeta = []
+        let newMeta = []
         newMeta.push(data)
         for (var i = 0; i < 19; i++) {
-            if (streamPastMetadata[stream].hasOwnProperty(i)) {
-                newMeta.push(streamPastMetadata[stream][i])
+            if (streamPastMetadata[streamName].hasOwnProperty(i)) {
+                newMeta.push(streamPastMetadata[streamName][i])
             }
         }
-        streamPastMetadata[stream] = newMeta
-        newMeta = null
+        streamPastMetadata[streamName] = newMeta
     }
-    data.stream = stream
-    global.hooks.runHooks("metadata", data)
+    data.stream = streamName
+    events.emit("metadata", data)
 }
 
-var getActiveStreams = function() {
-    var returnStreams = []
-    for (var id in streams) {
+const getActiveStreams = () => {
+    let returnStreams = []
+    for (let id in streams) {
         if (streams.hasOwnProperty(id)) {
             returnStreams.push(id)
         }
     }
     returnStreams.sort()
-    returnStreams.sort(function(a, b) {
-        return (a.replace(/\D/g, '')) - (b.replace(/\D/g, ''));
+    returnStreams.sort((a, b) => {
+        return (a.replace(/\D/g, "")) - (b.replace(/\D/g, ""));
     })
     return returnStreams
 }
 
-var listenerTunedIn = function(stream, ip, client, starttime, hls) {
-    if (typeof streamListeners[stream] === "undefined") {
-        streamListeners[stream] = []
+const listenerTunedIn = (streamName, ip, client, starttime, hls) => {
+    if (!streamListeners[streamName]) {
+        streamListeners[streamName] = []
     }
 
-    if (!latestListenerID[stream]){
-        latestListenerID[stream] = 0;
+    if (!latestListenerID[streamName]) {
+        latestListenerID[streamName] = 0;
     }
 
-    latestListenerID[stream]++
+    latestListenerID[streamName]++
 
-    var info = {
-        stream: stream,
+    let info = {
+        stream: streamName,
         ip: ip,
         client: client,
         starttime: starttime,
         hls: hls || false,
-        id: latestListenerID[stream]
+        id: latestListenerID[streamName],
     }
     if (typeof global.config.geoservices !== "undefined" && global.config.geoservices.enabled) {
         var ipInfo = global.maxmind.getLocation(ip)
@@ -243,75 +237,72 @@ var listenerTunedIn = function(stream, ip, client, starttime, hls) {
             info.country = ipInfo.countryName
             info.location = {
                 "latitude": ipInfo.latitude,
-                "longitude": ipInfo.longitude
+                "longitude": ipInfo.longitude,
             }
         }
     }
-    global.hooks.runHooks("listenerTunedIn", info)
+    events.emit("listenerTunedIn", info)
 
     streamListeners[stream].push(info)
     return info.id
 }
 
-var listenerTunedOut = function(stream, id) {
-    if (typeof id === "number" && typeof streamListeners[stream] !== "undefined") {
-        var listener = _.findWhere(streamListeners[stream],{id: id})
-        global.hooks.runHooks("listenerTunedOut", {
+const listenerTunedOut = (streamName, id) => {
+    if (typeof id === "number" && streamListeners[streamName]) {
+        var listener = _.findWhere(streamListeners[streamName], {id: id})
+        events.emit("listenerTunedOut", {
             id: id,
-            stream: stream,
+            stream: streamName,
             ip: listener.ip,
-            client:listener.client,
-            starttime: listener.starttime
+            client: listener.client,
+            starttime: listener.starttime,
         })
-        streamListeners[stream] = _.without(streamListeners[stream],listener)
+        streamListeners[streamName] = _.without(streamListeners[streamName], listener)
     }
 }
 
-var listenerIdExists = function (stream, id, ip, client) {
-    if (!streamListeners[stream]){
+const listenerIdExists = (streamName, id, ip, client) => {
+    if (!streamListeners[streamName]) {
         return false
     }
-    if (typeof id !== "number"){
-        id = parseInt(id)
+    if (typeof id !== "number") {
+        id = parseInt(id, 10)
     }
-    var listener = _.findWhere(streamListeners[stream],{id: id})
-    if (!listener){
+    var listener = _.findWhere(streamListeners[stream], {id: id})
+    if (!listener) {
         return false
     }
-    if (listener.ip !== ip || listener.client !== client){
+    if (listener.ip !== ip || listener.client !== client) {
         return false
     }
     return true
 }
 
-var getListeners = function(stream) {
-    if (typeof streamListeners[stream] === "undefined") {
+const getListeners = (streamName) => {
+    if (!streamListeners[streamName]) {
         return []
-    } else {
-        return _.without(streamListeners[stream], undefined)
     }
+    return _.without(streamListeners[streamName], undefined)
 }
 
-var getUniqueListeners = function(stream) {
-    if (typeof streamListeners[stream] === "undefined") {
+const getUniqueListeners = (streamName) => {
+    if (!streamListeners[stream]) {
         return []
     }
-    var listeners = getListeners(stream)
-    var listenersWithUniqueCriteria = []
+    const listeners = getListeners(streamName)
+    let listenersWithUniqueCriteria = []
 
-    for (var id in listeners) {
-        if (listeners.hasOwnProperty(id)) {
-            listenersWithUniqueCriteria.push({
-                stream: listeners[id].stream,
-                client: listeners[id].client,
-                ip: listeners[id].ip
-            })
-        }
+    for (var listener of listeners) {
+        listenersWithUniqueCriteria.push({
+            stream: listener.stream,
+            client: listener.client,
+            ip: listener.ip,
+        })
     }
 
-    var uniqueListeners = []
+    let uniqueListeners = []
 
-    for (var id in listenersWithUniqueCriteria) {
+    for (let id in listenersWithUniqueCriteria) {
         if (listenersWithUniqueCriteria.hasOwnProperty(id)) {
             if (listenersWithUniqueCriteria.indexOf(listenersWithUniqueCriteria[id]) === id) {
                 uniqueListeners.push(listeners[id])
@@ -322,25 +313,25 @@ var getUniqueListeners = function(stream) {
     return uniqueListeners
 }
 
-var numberOfListerners = function(stream) {
-    return getListeners(stream).length
+const numberOfListerners = (streamName) => {
+    return getListeners(streamName).length
 }
 
-var numberOfUniqueListerners = function(stream) {
-    return getListeners(stream).length
+const numberOfUniqueListerners = (streamName) => {
+    return getListeners(streamName).length
 }
 
-var getPreBuffer = function(stream) {
-    return streamPreBuffer[stream]
+const getPreBuffer = (streamName) => {
+    return streamPreBuffer[streamName]
 }
 
-var getPastMedatada = function(stream) {
-    return streamPastMetadata[stream]
+const getPastMedatada = (streamName) => {
+    return streamPastMetadata[streamName]
 }
 
 
-var endStream = function(stream) {
-    if (isStreamInUse(stream)) {
+const endStream = (streamName) => {
+    if (isStreamInUse(streamName)) {
         inputStreams[stream].destroy();
     }
 }
