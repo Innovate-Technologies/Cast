@@ -1,5 +1,5 @@
 import fs from "fs"
-let app = require("express")()
+const app = require("express")()
 
 global.io = require("socket.io")
 
