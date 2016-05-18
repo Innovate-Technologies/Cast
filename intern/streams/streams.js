@@ -243,7 +243,7 @@ const listenerTunedIn = (streamName, ip, client, starttime, hls) => {
     }
     events.emit("listenerTunedIn", info)
 
-    streamListeners[stream].push(info)
+    streamListeners[streamName].push(info)
     return info.id
 }
 

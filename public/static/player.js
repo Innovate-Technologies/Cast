@@ -20,11 +20,11 @@ var audio = null;
 
 var pressedPlayButton = function (stream) {
     if (audio === null) {
-        document.getElementById('playStopButton').className = 'glyphicon glyphicon-stop';
+        document.getElementById('playStopButton').className = 'fa fa-stop';
         audio = new Audio(stream);
         audio.play();
     } else {
-        document.getElementById('playStopButton').className = 'glyphicon glyphicon-play';
+        document.getElementById('playStopButton').className = 'fa fa-play';
         audio.pause();
         audio.src = '';
         audio = null;

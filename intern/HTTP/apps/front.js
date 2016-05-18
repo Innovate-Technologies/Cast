@@ -1,6 +1,6 @@
 import jade from "jade"
 import fs from "fs"
-import geolock from "../../geolock/geolock.js"
+import * as geolock from "../../geolock/geolock.js"
 import express from "express"
 
 const indexPage = jade.compile(fs.readFileSync(localdir + "/public/index.jade"));

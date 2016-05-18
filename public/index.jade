@@ -3,6 +3,7 @@ html(lang="en")
   head
     title Cast
     link(href="/static/bootstrap.min.css",rel="stylesheet")
+    link(href="/static/font-awesome.min.css",rel="stylesheet")
     link(href="/static/cast.css",rel="stylesheet")
     script(src="/static/player.js")
     script(src="/socket.io/socket.io.js")
@@ -34,7 +35,7 @@ html(lang="en")
                             p.lead(id="djname-"+currentStream) #{meta.djname}
                             p.lead(id="meta-"+currentStream) #{meta.song}
                             button.btn.btn-success.btn-circle.btn-xl(onClick="pressedPlayButton('"+hostname+"/streams/"+currentStream+"')")
-                                i.glyphicon.glyphicon-play#playStopButton
+                                i.fa.fa-play#playStopButton
                             if listencount==1
                                 p.listencount(id="listencount-"+currentStream) 1 person is listening right now.
                             else

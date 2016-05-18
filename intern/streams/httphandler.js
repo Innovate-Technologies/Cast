@@ -1,5 +1,5 @@
 import icy from "./icy"
-import geolock from "../geolock/geolock.js"
+import * as geolock from "../geolock/geolock.js"
 
 export default (app) => {
     if (!app) {
