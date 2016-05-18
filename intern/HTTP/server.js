@@ -1,7 +1,7 @@
 import fs from "fs"
 const app = require("express")()
 
-global.io = require("socket.io")
+global.io = require("socket.io")()
 
 if (config.httpsPort !== 0) {
     let https = require("http2").createServer({
@@ -31,9 +31,13 @@ app.use((req, res, next) => {
 for (let file of fs.readdirSync(global.localdir + "/intern/HTTP/apps/")) {
     require(global.localdir + "/intern/HTTP/apps/" + file)(app)
 }
-for (let file of fs.readdirSync(global.localdir + "/hooks/http/")) {
-    require(global.localdir + "/hooks/http/" + file)(app)
-}
+fs.stat(global.localdir + "/hooks/http/", (err) => {
+    if (!err) {
+        for (let file of fs.readdirSync(global.localdir + "/hooks/http/")) {
+            require(global.localdir + "/hooks/http/" + file)(app)
+        }
+    }
+})
 
 streamOutput(app)
 streamInput(global.config)

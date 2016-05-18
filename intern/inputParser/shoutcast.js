@@ -1,5 +1,5 @@
 import tcp from "net"
-if (!streams) {
+if (!global.streams) {
     global.streams = require("../streams/streams.js")
 }
 

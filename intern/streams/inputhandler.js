@@ -1,4 +1,4 @@
-import input from "../inputParser/input.js"
+import {shoutcastListener} from "../inputParser/input.js"
 
 export default (conf) => {
     for (var id in conf.streams) {
@@ -11,5 +11,5 @@ export default (conf) => {
             }
         }
     }
-    input.shoutcastListener(conf.input.SHOUTcast)
+    shoutcastListener(conf.input.SHOUTcast)
 }
