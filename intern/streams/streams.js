@@ -268,7 +268,7 @@ const listenerIdExists = (streamName, id, ip, client) => {
     if (typeof id !== "number") {
         id = parseInt(id, 10)
     }
-    var listener = _.findWhere(streamListeners[stream], {id: id})
+    const listener = _.findWhere(streamListeners[streamName], {id: id})
     if (!listener) {
         return false
     }

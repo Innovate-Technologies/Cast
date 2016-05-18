@@ -253,11 +253,10 @@ export default (app) => {
         res.send(global.config.hostname + "/streams/" + stream)
     }
 
-    var serveM3U8 = (req, res) => {
-        var stream = req.params.stream.split(".")[0]
-        if (typeof stream === "undefined" || stream === "" || !global.streams.streamExists(stream)) {
-            res.status(404).send("Stream not found")
-            return
+    const serveM3U8 = (req, res) => {
+        let stream = req.params.stream.split(".")[0]
+        if (!stream || stream === "" || !global.streams.streamExists(stream)) {
+            return res.status(404).send("Stream not found")
         }
 
         if (!req.query.id || !global.streams.listenerIdExists(stream, req.query.id, req.ip, req.headers["user-agent"])) {
