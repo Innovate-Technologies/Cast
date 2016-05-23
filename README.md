@@ -1,9 +1,7 @@
-# Cast 1.0 (Beta 2)
+# Cast 1.0
 
 Cast is a modern streaming solution built to accomodate the demands of modern radio streaming.
 The 90s have long since passed, it's time that we pass with it.
-
-This is a *beta* version of Cast 1.0 − we have a lot of new awesome features on the roadmap. Just give us some time!
 
 ## Pillars
 
@@ -84,7 +82,7 @@ Feel free to correct grammatical mistakes, Ethan's not perfect.
 
 ## License
 
-Copyright © 2015  Innovate Technologies (Maarten Eyskens, Léo Lam)
+Copyright © 2015-2016  Innovate Technologies (Maartje Eyskens, Léo Lam)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
