@@ -23,7 +23,7 @@ export default function (app) {
     app.get("/statistics", (req, res) => {
         const activeStreams = streams.getActiveStreams()
         let mode = "xml"
-        if (req.query.json === 1) {
+        if (req.query.json === "1") {
             mode = "json"
         }
 
@@ -55,7 +55,7 @@ export default function (app) {
                     "maxlisteners": 9999999, // not again...
                     "uniquelisteners": streams.numberOfUniqueListerners(activeStreams[id]),
                     "averagetime": 0,  // Shall we record this?
-                    "servergenre": streams.getStreamConf(streams[id]).genre,
+                    "servergenre": streams.getStreamConf(activeStreams[id]).genre,
                     "servergenre2": "", // We'll probably never support this
                     "servergenre3": "",
                     "servergenre4": "",

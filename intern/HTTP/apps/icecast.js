@@ -4,9 +4,11 @@ export default (app) => {
         const activeStreams = streams.getActiveStreams()
         let iceStreams = []
         for (let stream of activeStreams) {
+            console.log(stream);
+            console.log(streams.getStreamConf(stream).bitrate);
             iceStreams.push({
                 "audio_info": "bitrate=" + (streams.getStreamConf(stream).bitrate) + ";",
-                "bitrate": streams.getStreamConf(streams).bitrate,
+                "bitrate": streams.getStreamConf(stream).bitrate,
                 "channels": 2, // we guess so, there is currently not format reading
                 "genre": streams.getStreamConf(stream).genre,
                 "listener_peak": streams.numberOfListerners(stream),

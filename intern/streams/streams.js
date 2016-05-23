@@ -159,8 +159,8 @@ const getStream = (streamName) => {
     return streams[streamName]
 }
 
-const getStreamConf = (streamname) => {
-    return streamConf[streamname]
+const getStreamConf = (streamName) => {
+    return streamConf[streamName]
 }
 
 const removeStream = (streamName) => {
@@ -286,13 +286,13 @@ const getListeners = (streamName) => {
 }
 
 const getUniqueListeners = (streamName) => {
-    if (!streamListeners[stream]) {
+    if (!streamListeners[streamName]) {
         return []
     }
     const listeners = getListeners(streamName)
     let listenersWithUniqueCriteria = []
 
-    for (var listener of listeners) {
+    for (let listener of listeners) {
         listenersWithUniqueCriteria.push({
             stream: listener.stream,
             client: listener.client,
@@ -304,7 +304,7 @@ const getUniqueListeners = (streamName) => {
 
     for (let id in listenersWithUniqueCriteria) {
         if (listenersWithUniqueCriteria.hasOwnProperty(id)) {
-            if (listenersWithUniqueCriteria.indexOf(listenersWithUniqueCriteria[id]) === id) {
+            if (listenersWithUniqueCriteria.indexOf(listenersWithUniqueCriteria[id]) === parseInt(id, 10)) {
                 uniqueListeners.push(listeners[id])
             }
         }
