@@ -172,9 +172,9 @@ const sidToStream = (sid) => {
 
 const streamAdminStats = (req, res) => {
     var stream = sidToStream(req.query.sid)
-    let out
+    let output
     if (streams.isStreamInUse(stream)) {
-        out = {
+        output = {
             "currentlisteners": streams.numberOfListerners(stream),
             "peaklisteners": streams.numberOfListerners(stream),
             "maxlisteners": 9999,
@@ -201,7 +201,7 @@ const streamAdminStats = (req, res) => {
             "version": cast.version + " (V8 (Node.JS))",
         }
     } else {
-        out = {
+        output = {
             "currentlisteners": 0,
             "peaklisteners": 0,
             "maxlisteners": 9999,
@@ -229,15 +229,15 @@ const streamAdminStats = (req, res) => {
     }
 
     if (req.query.mode === "viewjson") {
-        return res.json(out)
+        return res.json(output)
     }
 
     var outXML = []
 
-    for (var id in out) {
-        if (out.hasOwnProperty(id)) {
+    for (var id in output) {
+        if (output.hasOwnProperty(id)) {
             var obj = {}
-            obj[id.toUpperCase()] = out[id]
+            obj[id.toUpperCase()] = output[id]
             outXML.push(obj)
         }
     }
@@ -252,11 +252,11 @@ const streamAdminListeners = (req, res) => {
     var stream = sidToStream(req.query.sid)
     var listeners = streams.getListeners(stream)
 
-    var out = []
+    var output = []
 
     for (let id in listeners) {
         if (listeners.hasOwnProperty(id)) {
-            out.push({
+            output.push({
                 "hostname": listeners[id].ip,
                 "useragent": listeners[id].client,
                 "connecttime": (Math.round((new Date()).getTime() / 1000) - listeners[id].starttime),
@@ -271,18 +271,18 @@ const streamAdminListeners = (req, res) => {
     }
 
     if (req.query.mode === "viewjson") {
-        return res.json(out)
+        return res.json(output)
     }
 
     var outXML = []
 
-    for (let id in out) {
-        if (out.hasOwnProperty(id)) {
+    for (let id in output) {
+        if (output.hasOwnProperty(id)) {
             var lstrInfo = []
-            for (var objid in out[id]) {
-                if (out[id].hasOwnProperty(objid)) {
+            for (var objid in output[id]) {
+                if (output[id].hasOwnProperty(objid)) {
                     let obj = {}
-                    obj[objid.toUpperCase()] = out[id][objid]
+                    obj[objid.toUpperCase()] = output[id][objid]
                     lstrInfo.push(obj)
                 }
             }
@@ -306,11 +306,11 @@ const streamAdminListeners = (req, res) => {
 const streamAdminSongHistory = (req, res) => {
     let stream = sidToStream(req.query.sid)
     let pastSongs = streams.getPastMedatada(stream)
-    let out = []
+    let output = []
 
     for (let id in pastSongs) {
         if (pastSongs.hasOwnProperty(id)) {
-            out.push({
+            output.push({
                 "playedat": pastSongs[id].time,
                 "title": pastSongs[id].song,
             })
@@ -318,18 +318,18 @@ const streamAdminSongHistory = (req, res) => {
     }
 
     if (req.query.mode === "viewjson" || req.query.type === "json") {
-        return res.json(out)
+        return res.json(output)
     }
 
     let outXML = []
 
-    for (let id in out) {
-        if (out.hasOwnProperty(id)) {
+    for (let id in output) {
+        if (output.hasOwnProperty(id)) {
             var songInfo = [{}]
-            for (let objid in out[id]) {
-                if (out[id].hasOwnProperty(objid)) {
+            for (let objid in output[id]) {
+                if (output[id].hasOwnProperty(objid)) {
                     let obj = {}
-                    obj[objid.toUpperCase()] = out[id][objid]
+                    obj[objid.toUpperCase()] = output[id][objid]
                     songInfo.push(obj)
                 }
             }
