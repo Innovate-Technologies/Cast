@@ -14,7 +14,7 @@ export default (app) => {
         if (!geolock.isAllowed(req.ip)) {
             return res.status(401).send()
         }
-        if (!req.params.stream || req.params.stream === "") {
+        if (!req.params.stream) {
             return res.status(404).send()
         }
         if (req.params.stream.split(".").length > 1) {
@@ -104,7 +104,7 @@ export default (app) => {
             return res.status(401).send("Your country is not allowed to tune in to the stream")
         }
 
-        if (!req.params.stream || req.params.stream === "") {
+        if (!req.params.stream) {
             res.status(404).send("Stream not found")
             return
         }
@@ -227,7 +227,7 @@ export default (app) => {
 
     var servePLS = (req, res) => {
         var stream = req.params.stream.split(".")[0]
-        if (!stream || stream === "" || !global.streams.streamExists(stream)) {
+        if (!stream || !global.streams.streamExists(stream)) {
             res.status(404).send("Stream not found")
             return
         }
@@ -244,7 +244,7 @@ export default (app) => {
 
     var serveM3U = (req, res) => {
         var stream = req.params.stream.split(".")[0]
-        if (!stream || stream === "" || !global.streams.streamExists(stream)) {
+        if (!stream || !global.streams.streamExists(stream)) {
             res.status(404).send("Stream not found")
             return
         }
@@ -255,7 +255,7 @@ export default (app) => {
 
     const serveM3U8 = (req, res) => {
         let stream = req.params.stream.split(".")[0]
-        if (!stream || stream === "" || !global.streams.streamExists(stream)) {
+        if (!stream || !global.streams.streamExists(stream)) {
             return res.status(404).send("Stream not found")
         }
 
