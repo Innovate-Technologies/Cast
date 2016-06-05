@@ -1,7 +1,7 @@
 import stream from "stream"
 import _ from "underscore"
 
-if (global.config.geoservices && global.config.geoservices.enabled && !global.maxmind) {
+if (config.geoservices && config.geoservices.enabled && !maxmind) {
     global.maxmind = require("maxmind")
     if (!global.maxmind.init(global.config.geoservices.maxmindDatabase)) {
         console.log("Error loading Maxmind Database")
@@ -55,10 +55,7 @@ if (global.config.hls) {
 }
 
 const streamExists = function (streamname) {
-    if (streams.hasOwnProperty(streamname) && stream[streamname] !== null) {
-        return true
-    }
-    return false
+    return streams.hasOwnProperty(streamname) && stream[streamname] !== null
 }
 
 
@@ -80,7 +77,7 @@ const addStream = function (inputStream, conf) {
     streamConf[conf.stream] = conf
     inputStreams[conf.stream] = inputStream
 
-    if (global.config.rateLimiting) {
+    if (config.rateLimiting) {
         rateLimitingIsEnabled = true
 
         inputStreams[conf.stream].on("data", (chunk) => {
@@ -108,7 +105,7 @@ const addStream = function (inputStream, conf) {
             hlsBuffer[conf.stream].push(chunk)
         });
         var hlsInterval = setInterval(() => {
-            let now = new Date().getTime()
+            const now = new Date().getTime()
             if (!hlsPool[conf.stream]) {
                 hlsPool[conf.stream] = {}
             }
@@ -231,7 +228,7 @@ const listenerTunedIn = (streamName, ip, client, starttime, hls) => {
         hls: hls || false,
         id: latestListenerID[streamName],
     }
-    if (typeof global.config.geoservices !== "undefined" && global.config.geoservices.enabled) {
+    if (config.geoservices && config.geoservices.enabled) {
         var ipInfo = global.maxmind.getLocation(ip)
         if (ipInfo !== null) {
             info.country = ipInfo.countryName

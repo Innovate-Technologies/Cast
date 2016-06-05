@@ -9,12 +9,12 @@ export default (app) => {
             iceStreams.push({
                 "audio_info": "bitrate=" + (streams.getStreamConf(stream).bitrate) + ";",
                 "bitrate": streams.getStreamConf(stream).bitrate,
-                "channels": 2, // we guess so, there is currently not format reading
+                "channels": 2, // we guess so, there is currently no reading of the audio frames
                 "genre": streams.getStreamConf(stream).genre,
                 "listener_peak": streams.numberOfListerners(stream),
                 "listeners": streams.numberOfListerners(stream),
                 "listenurl": config.hostname + "/streams/" + stream,
-                "samplerate": 44100, // we guess so, there is currently not format reading
+                "samplerate": 44100, // we guess so, there is currently no reading of the audio frames
                 "server_description": "",
                 "server_name": streams.getStreamConf(stream).name,
                 "server_type": streams.getStreamConf(stream).type,
