@@ -129,8 +129,8 @@ const addStream = function (inputStream, conf) {
 
 
     throttleStream.on("data", (chunk) => {
-        let newPreBuffer = []
-        let currentLength = streamPreBuffer[conf.stream].length
+        const newPreBuffer = []
+        const currentLength = streamPreBuffer[conf.stream].length
         for (let i = (rateLimitingIsEnabled ? 10 : 100); i > 0; i--) {
             if (streamPreBuffer[conf.stream].hasOwnProperty(currentLength - i)) {
                 newPreBuffer.push(streamPreBuffer[conf.stream][currentLength - i])
@@ -182,7 +182,7 @@ const setStreamMetadata = (streamName, data) => {
     if (typeof streamPastMetadata[streamName] === "undefined") {
         streamPastMetadata[streamName] = [data]
     } else {
-        let newMeta = []
+        const newMeta = []
         newMeta.push(data)
         for (var i = 0; i < 19; i++) {
             if (streamPastMetadata[streamName].hasOwnProperty(i)) {
@@ -196,7 +196,7 @@ const setStreamMetadata = (streamName, data) => {
 }
 
 const getActiveStreams = () => {
-    let returnStreams = []
+    const returnStreams = []
     for (let id in streams) {
         if (streams.hasOwnProperty(id)) {
             returnStreams.push(id)
@@ -220,7 +220,7 @@ const listenerTunedIn = (streamName, ip, client, starttime, hls) => {
 
     latestListenerID[streamName]++
 
-    let info = {
+    const info = {
         stream: streamName,
         ip: ip,
         client: client,

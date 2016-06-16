@@ -272,7 +272,7 @@ export default (app) => {
         res.setHeader("Content-Type", "audio/x-mpegurl")
         let response = `#EXTM3U\n#EXT-X-VERSION:5\n#EXT-X-TARGETDURATION:5\n#EXT-X-MEDIA-SEQUENCE:${global.streams.hlsDeleteCount[stream]}\n`
         for (let index of global.streams.hlsIndexes[stream]) {
-            response += "#EXTINF:2.0,\n" + global.config.hostname + "/hls/" + stream + "/" + index + "?id=" + req.query.id + "\n"
+            response += `#EXTINF:2.0,\n${global.config.hostname}/hls/${stream}/${index}?id=${req.query.id}\n`
         }
         res.send(response)
     }
