@@ -14,6 +14,7 @@ let sendRequest = (host, data, callback) => {
             return callback(new Error("Got an invalid response"));
         }
         callback(null, response.headers);
+	console.log(response.headers);
     }).on("timeout", () => {
         callback(new Error("Request timed out"));
     });
