@@ -176,7 +176,7 @@ const getStreamMetadata = (streamName) => {
     return streamMetadata[streamName] || {}
 }
 const setStreamMetadata = (streamName, data) => {
-    if (config.antiStreamripper) {
+    if (config.antiStreamRipper) {
         setTimeout(setStreamMetadataNow, 1000 * (Math.random() * 10), streamName, data)
     } else {
         setStreamMetadataNow(streamName, data)
