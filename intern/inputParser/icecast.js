@@ -14,7 +14,9 @@ const listener = tcp.createServer((c) => {
 
     c.on("data", (data) => {
         let input = data.toString("utf-8").split("\r\n").join("\n");
+        console.log(input)
         if (!gotRequest) {
+            console.log(request)
             let request = input.split(" ")
             if (request[0] === "SOURCE" || request[0] === "PUT") {
                 gotRequest = true
@@ -30,7 +32,7 @@ const listener = tcp.createServer((c) => {
                             delete authArray[0]
                             let password = authArray.join("")
                             if (!streams.streamPasswords.hasOwnProperty(password)) {
-                                c.write("HTTP/1.1 401 You need to authenticate\n")
+                                c.write("HTTP/1.1 401 You need to authenticate\n\n")
                                 return c.end()
                             }
                             updateStream = streams.streamPasswords[password]
@@ -38,7 +40,7 @@ const listener = tcp.createServer((c) => {
                     }
                 }
                 if (!updateStream) {
-                    c.write("HTTP/1.1 401 You need to authenticate\n")
+                    c.write("HTTP/1.1 401 You need to authenticate\n\n")
                     return c.end()
                 }
                 let getInfo = parseGet(url.replace("/admin/metadata?", ""))
@@ -87,7 +89,7 @@ const listener = tcp.createServer((c) => {
                 }
             }
             if (!indexOfAuth) {
-                c.write("HTTP/1.1 401 You need to authenticate\n")
+                c.write("HTTP/1.1 401 You need to authenticate\n\n")
                 return c.end()
             }
             let authBuffer = new Buffer(request[indexOfAuth].split(":")[1].replace("Basic", "").trim(), "base64")
@@ -95,12 +97,12 @@ const listener = tcp.createServer((c) => {
             delete authArray[0]
             let password = authArray.join("")
             if (!streams.streamPasswords.hasOwnProperty(password)) {
-                c.write("HTTP/1.1 401 You need to authenticate\n")
+                c.write("HTTP/1.1 401 You need to authenticate\n\n")
                 return c.end()
             }
             stream = streams.streamPasswords[password]
             if (streams.isStreamInUse(stream)) {
-                c.write("HTTP/1.1 403 Mountpoint in use\n")
+                c.write("HTTP/1.1 403 Mountpoint in use\n\n")
                 return c.end()
             }
 
@@ -112,7 +114,7 @@ const listener = tcp.createServer((c) => {
             if (continueNeeded) {
                 c.write("HTTP/1.1 100 Continue\n")
             }
-            c.write("HTTP/1.1 200 OK\n")
+            c.write("HTTP/1.1 200 OK\n\n")
             gotHeaders = true
         }
 
