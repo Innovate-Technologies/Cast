@@ -43,4 +43,23 @@ export default (app) => {
         })
 
     })
+
+    app.get("/admin/metadata", (req, res) => {
+        if (!req.headers.Authorization) {
+            return res.status(401).send()
+        }
+        const password = new Buffer(req.headers.Authorization.replace("Basic", "").trim(), "base64").toString()
+        if (!streams.streamPasswords.hasOwnProperty(password)) {
+            return res.status(401).send()
+        }
+        const stream = streams.streamPasswords[password]
+        if (req.params.mode === "updinfo") {
+            streams.setStreamMetadata(stream, {
+                song: req.params.song || "", // do some encoders send more? (looks at Liquidsoap)
+                djname: req.params.djname, // extended API
+            })
+        }
+        res.set("Content-Type", "text/xml");
+        res.send("<?xml version=\"1.0\"?>\n<iceresponse><message>Metadata update successful</message><return>1</return></iceresponse>")
+    })
 }
