@@ -18,9 +18,38 @@ const listener = tcp.createServer((c) => {
             let request = input.split(" ")
             if (request[0] === "SOURCE" || request[0] === "PUT") {
                 gotRequest = true
-                stream = request[1].replace("/live/", "").replace("/", "")
             } else {
-                // handle metadata
+                let requestArray = input.split("\n")
+                let url = request[1]
+                let updateStream
+                for (let id in requestArray) {
+                    if (requestArray.hasOwnProperty(id)) {
+                        if (requestArray[id].toLowerCase().indexOf("authorization") > -1) {
+                            let authBuffer = new Buffer(requestArray[id].split(":")[1].replace("Basic", "").trim(), "base64")
+                            let authArray = authBuffer.toString().split(":")
+                            delete authArray[0]
+                            let password = authArray.join("")
+                            if (!streams.streamPasswords.hasOwnProperty(password)) {
+                                c.write("HTTP/1.1 401 You need to authenticate\n")
+                                return c.end()
+                            }
+                            updateStream = streams.streamPasswords[password]
+                        }
+                    }
+                }
+                if (!updateStream) {
+                    c.write("HTTP/1.1 401 You need to authenticate\n")
+                    return c.end()
+                }
+                let getInfo = parseGet(url.replace("/admin/metadata?", ""))
+                if (getInfo.mode === "updinfo") {
+                    streams.setStreamMetadata(updateStream, {
+                        song: getInfo.song || "", // do some encoders send more? (looks at Liquidsoap)
+                        djname: getInfo.djname, // extended API
+                    })
+                }
+                c.write("HTTP/1.1 200 OK\nContent-Type: text/xml; charset=utf-8\n\n<?xml version=\"1.0\"?>\n<iceresponse><message>Metadata update successful</message><return>1</return></iceresponse>")
+                return c.end()
             }
         }
 
@@ -28,8 +57,6 @@ const listener = tcp.createServer((c) => {
             let request = input.split("\n")
             let indexOfAuth
             let continueNeeded = false
-
-            console.log(request);
 
             for (let id in request) {
                 if (request.hasOwnProperty(id)) {
@@ -59,7 +86,6 @@ const listener = tcp.createServer((c) => {
                     }
                 }
             }
-            console.log(info);
             if (!indexOfAuth) {
                 c.write("HTTP/1.1 401 You need to authenticate\n")
                 return c.end()
@@ -91,9 +117,6 @@ const listener = tcp.createServer((c) => {
         }
 
         if (gotRequest && gotHeaders && !startedPipe) {
-            console.log("PIPEEEE");
-            console.log(info);
-            console.log(stream);
             streams.addStream(c, {
                 name: info.name,
                 stream: stream,
@@ -115,6 +138,17 @@ const listener = tcp.createServer((c) => {
     })
 
 })
+
+const parseGet = (info) => {
+    const output = {}
+    const arrayOfKeyValue = info.split("&")
+    for (let keyValue of arrayOfKeyValue) {
+        let keyValueArray = keyValue.split("=")
+        output[keyValueArray[0]] = decodeURIComponent(keyValueArray[1])
+    }
+    return output
+}
+
 
 module.exports.listenOn = (port) => {
     listener.listen(port)
