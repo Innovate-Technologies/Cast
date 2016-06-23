@@ -175,8 +175,18 @@ const isStreamInUse = (streamName) => {
 const getStreamMetadata = (streamName) => {
     return streamMetadata[streamName] || {}
 }
-
 const setStreamMetadata = (streamName, data) => {
+    if (config.antiStreamripper) {
+        setTimeout(setStreamMetadataNow, 1000 * (Math.random() * 10), streamName, data)
+    } else {
+        setStreamMetadataNow(streamName, data)
+    }
+}
+
+const setStreamMetadataNow = (streamName, data) => {
+    if (!isStreamInUse(streamName)) {
+        return // prevents race conditions with anti-streamripper
+    }
     data.time = Math.round((new Date()).getTime() / 1000)
     streamMetadata[streamName] = data
     if (typeof streamPastMetadata[streamName] === "undefined") {
