@@ -60,6 +60,6 @@ export default (app) => {
             })
         }
         res.set("Content-Type", "text/xml");
-        res.send("<?xml version=\"1.0\"?>\n<iceresponse><message>Metadata update successful</message><return>1</return></iceresponse>")
+        res.send(`<?xml version="1.0"?>\n<iceresponse><message>Metadata update successful</message><return>1</return></iceresponse>`)
     })
 }

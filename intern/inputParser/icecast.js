@@ -6,35 +6,33 @@ if (!global.streams) {
 const listener = tcp.createServer((c) => {
     let stream
 
-    let info = {}
+    const info = {}
 
     let gotRequest = false
     let gotHeaders = false
     let startedPipe = false
 
     c.on("data", (data) => {
-        let input = data.toString("utf-8").split("\r\n").join("\n");
+        const input = data.toString("utf-8").split("\r\n").join("\n");
         if (!gotRequest) {
-            let request = input.split(" ")
+            const request = input.split(" ")
             if (request[0] === "SOURCE" || request[0] === "PUT") {
                 gotRequest = true
             } else {
                 let requestArray = input.split("\n")
                 let url = request[1]
                 let updateStream
-                for (let id in requestArray) {
-                    if (requestArray.hasOwnProperty(id)) {
-                        if (requestArray[id].toLowerCase().indexOf("authorization") > -1) {
-                            let authBuffer = new Buffer(requestArray[id].split(":")[1].replace("Basic", "").trim(), "base64")
-                            let authArray = authBuffer.toString().split(":")
-                            delete authArray[0]
-                            let password = authArray.join("")
-                            if (!streams.streamPasswords.hasOwnProperty(password)) {
-                                c.write("HTTP/1.1 401 You need to authenticate\n\n")
-                                return c.end()
-                            }
-                            updateStream = streams.streamPasswords[password]
+                for (let header of requestArray) {
+                    if (header.toLowerCase().includes("authorization")) {
+                        let authBuffer = new Buffer(header.split(":")[1].replace("Basic", "").trim(), "base64")
+                        let authArray = authBuffer.toString().split(":")
+                        delete authArray[0]
+                        let password = authArray.join("")
+                        if (!streams.streamPasswords.hasOwnProperty(password)) {
+                            c.write("HTTP/1.1 401 You need to authenticate\n\n")
+                            return c.end()
                         }
+                        updateStream = streams.streamPasswords[password]
                     }
                 }
                 if (!updateStream) {
@@ -48,7 +46,7 @@ const listener = tcp.createServer((c) => {
                         djname: getInfo.djname, // extended API
                     })
                 }
-                c.write("HTTP/1.1 200 OK\nContent-Type: text/xml; charset=utf-8\n\n<?xml version=\"1.0\"?>\n<iceresponse><message>Metadata update successful</message><return>1</return></iceresponse>")
+                c.write(`HTTP/1.1 200 OK\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0"?>\n<iceresponse><message>Metadata update successful</message><return>1</return></iceresponse>`)
                 return c.end()
             }
         }
@@ -58,7 +56,7 @@ const listener = tcp.createServer((c) => {
             let indexOfAuth
             let continueNeeded = false
 
-            for (let id in request) {
+            for (let id of request) {
                 if (request.hasOwnProperty(id)) {
                     if (request[id].toLowerCase().indexOf("authorization") > -1) {
                         indexOfAuth = id
@@ -150,6 +148,6 @@ const parseGet = (info) => {
 }
 
 
-module.exports.listenOn = (port) => {
+export const listenOn = (port) => {
     listener.listen(port)
 }
