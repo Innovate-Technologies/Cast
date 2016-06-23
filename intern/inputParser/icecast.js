@@ -14,9 +14,7 @@ const listener = tcp.createServer((c) => {
 
     c.on("data", (data) => {
         let input = data.toString("utf-8").split("\r\n").join("\n");
-        console.log(input)
         if (!gotRequest) {
-            console.log(request)
             let request = input.split(" ")
             if (request[0] === "SOURCE" || request[0] === "PUT") {
                 gotRequest = true
