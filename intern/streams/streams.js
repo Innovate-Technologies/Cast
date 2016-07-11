@@ -365,6 +365,7 @@ module.exports.listenerTunedIn = listenerTunedIn
 module.exports.listenerTunedOut = listenerTunedOut
 module.exports.listenerIdExists = listenerIdExists
 module.exports.getListeners = getListeners
+module.exports.streamListeners = streamListeners
 module.exports.getUniqueListeners = getUniqueListeners
 module.exports.numberOfListerners = numberOfListerners
 module.exports.numberOfUniqueListerners = numberOfUniqueListerners
