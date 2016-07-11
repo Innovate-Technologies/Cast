@@ -6,5 +6,7 @@ global.events = new Events();
 
 const actionModules = fs.readdirSync(global.localdir + "/hooks/action");
 for (let module of actionModules) {
-    require(global.localdir + "/hooks/action/" + module);
+    if (fs.statSync(`${global.localdir}/hooks/action/${module}`).isFile()){
+        require(`${global.localdir}/hooks/action/${module}`);
+    }
 }
