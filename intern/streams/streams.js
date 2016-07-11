@@ -249,14 +249,14 @@ const listenerTunedIn = (streamName, ip, client, starttime, hls) => {
         }
     }
 
-    streamListeners[streamName].push(info)
+    streamListeners[streamName][info.id] = info
     events.emit("listenerTunedIn", info)
     return info.id
 }
 
 const listenerTunedOut = (streamName, id) => {
     if (typeof id === "number" && streamListeners[streamName]) {
-        let listener = _.findWhere(streamListeners[streamName], {id: id})
+        let listener = streamListeners[streamName][id]
         streamListeners[streamName] = _.without(streamListeners[streamName], listener)
         events.emit("listenerTunedOut", listener)
     }
