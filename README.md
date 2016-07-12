@@ -1,4 +1,4 @@
-# Cast 1.0
+# Cast 1.0 [![Build Status](https://travis-ci.org/Innovate-Technologies/Cast.svg?branch=travis)](https://travis-ci.org/Innovate-Technologies/Cast)
 
 Cast is a modern streaming solution built to accomodate the demands of modern radio streaming.
 The 90s have long since passed, it's time that we pass with it.
