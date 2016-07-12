@@ -18,6 +18,7 @@ script:
 - cp `which node` ./node
 - npm install
 - rm -fr .git
+- sed -i 's/\/config.json/..\/config.json/g' server.js
 - /tmp/makeself-release-2.2.0/makeself.sh `pwd` "/tmp/cast" "Cast 1.0" "./node server.js" >/dev/null 2>&1
 deploy:
   provider: releases
