@@ -14,9 +14,6 @@ os:
 - osx
 script:
 - BUILDLOC=`pwd`
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install wget; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gcc; fi
 - wget -O /tmp/release-2.2.0.tar.gz https://github.com/megastep/makeself/archive/release-2.2.0.tar.gz && cd /tmp/ && tar -xzf release-2.2.0.tar.gz && cd $BUILDLOC
 - cp `which node` ./node
 - npm install
