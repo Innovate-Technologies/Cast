@@ -1,24 +1,32 @@
 language: node_js
 node_js:
-  - "6"
+- '6'
 env:
-  - CXX=g++-4.8
+- CXX=g++-4.8
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     packages:
-      - g++-4.8
+    - g++-4.8
 os:
-  - linux
-  - osx
-
+- linux
+- osx
 script:
-  - BUILDLOC=`pwd`
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install wget; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gcc; fi
-  - wget -O /tmp/release-2.2.0.tar.gz https://github.com/megastep/makeself/archive/release-2.2.0.tar.gz && cd /tmp/ && tar -xzf release-2.2.0.tar.gz && cd $BUILDLOC
-  - cp `which node` ./node
-  - npm install
-  - /tmp/makeself-release-2.2.0/makeself.sh `pwd` `node server.js` "Cast 1.0" /tmp/cast
+- BUILDLOC=`pwd`
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install wget; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gcc; fi
+- wget -O /tmp/release-2.2.0.tar.gz https://github.com/megastep/makeself/archive/release-2.2.0.tar.gz
+  && cd /tmp/ && tar -xzf release-2.2.0.tar.gz && cd $BUILDLOC
+- cp `which node` ./node
+- npm install
+- /tmp/makeself-release-2.2.0/makeself.sh `pwd` `node server.js` "Cast 1.0" /tmp/cast
+deploy:
+  provider: releases
+  api_key:
+    secure: BCnPsm6SE7Nv9k/7fSCnztAGUA7jNVX3t/lWvRX1gtSbQkjKZXVmiRQXHKTZVyTaux3diiE5tGTzd0dp7PPsUDOgWdA0O3Goe37hCz6iOml67DCkvgE4AHVU72mL7iaczlxipS72XkAH0IKLv0+RIVhbe9Dc5gzozxTAmAscEbDbFk3s7F6f9WbJBL4Asd8BVWCt0kSvjbAp1M/xBIvWMxiLyCEdXMW3pNYAGXFE7rIYHK2/OTaerppNfJSCZWAyWniqJVbCshLjFw4szO+eEeqPwGW1AL5xTHD0aFVchNEm9bNzelDAjS4eOqwiPPrfC2Hd3wVEDMgoAO6w1kadk6D8gcEQdgp2HzCu/JzXXbz9MEXkcEwhrpgTRM50A2DFt5PwtPOPpitQUGDHhMYqebBHRZXc27RS4QTgNVm3e5IknvlHTCQ5AhR2O7y5uZurGnGoBxbySxb0MWpU+0NihM85hNy9dDTm7zWdrSS1vW0OibeIa3GQJczoJDteHh50Ds1QbtX64HfoIwQdDeSZ3u8sNRC137SrkVNueDbv/ECHe55ZG+SaMmAe0aiBMom43SLQ1Gi/xqyIBnNCRoT1vMmqtQWHTFIQcIRmc7Gj/vivH9GuAsBpLo2pMMBrr78L1ElZWhfYUIC3bvg02+ShFaYgphRkte8IwGdTVUDo4os=
+  file: /tmp/cast
+  overwrite: true
+  on:
+    repo: Innovate-Technologies/Cast
