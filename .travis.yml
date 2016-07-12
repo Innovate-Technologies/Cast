@@ -20,7 +20,8 @@ script:
 - wget -O /tmp/release-2.2.0.tar.gz https://github.com/megastep/makeself/archive/release-2.2.0.tar.gz && cd /tmp/ && tar -xzf release-2.2.0.tar.gz && cd $BUILDLOC
 - cp `which node` ./node
 - npm install
-- /tmp/makeself-release-2.2.0/makeself.sh `pwd` `./node server.js` "Cast 1.0" /tmp/cast >/dev/null 2>&1
+- rm -fr .git
+- /tmp/makeself-release-2.2.0/makeself.sh `pwd` "/tmp/cast" "Cast 1.0" "./node server.js" >/dev/null 2>&1
 deploy:
   provider: releases
   api_key:
