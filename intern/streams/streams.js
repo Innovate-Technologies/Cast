@@ -320,11 +320,17 @@ const getUniqueListeners = (streamName) => {
     return uniqueListeners
 }
 
-const numberOfListerners = (streamName) => {
+const numberOfListerners = (streamName, admin = false) => {
+    if (config.hideListenerCount && !admin) {
+        return 0
+    }
     return getListeners(streamName).length
 }
 
-const numberOfUniqueListerners = (streamName) => {
+const numberOfUniqueListerners = (streamName, admin = false) => {
+    if (config.hideListenerCount && !admin) {
+        return 0
+    }
     return getListeners(streamName).length
 }
 

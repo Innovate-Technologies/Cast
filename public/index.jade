@@ -36,9 +36,10 @@ html(lang="en")
                             p.lead(id="meta-"+currentStream) #{meta.song}
                             button.btn.btn-success.btn-circle.btn-xl(onClick="pressedPlayButton('"+hostname+"/streams/"+currentStream+"')")
                                 i.fa.fa-play#playStopButton
-                            if listencount==1
-                                p.listencount(id="listencount-"+currentStream) 1 person is listening right now.
-                            else
-                                p.listencount(id="listencount-"+currentStream) #{listencount} people are listening right now.
+                            if listencount !== false
+                                if listencount==1
+                                    p.listencount(id="listencount-"+currentStream) 1 person is listening right now.
+                                else
+                                    p.listencount(id="listencount-"+currentStream) #{listencount} people are listening right now.
                         else
                             h1.cover-heading No streams found.

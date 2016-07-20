@@ -175,10 +175,10 @@ const streamAdminStats = (req, res) => {
     let output
     if (streams.isStreamInUse(stream)) {
         output = {
-            "currentlisteners": streams.numberOfListerners(stream),
-            "peaklisteners": streams.numberOfListerners(stream),
+            "currentlisteners": streams.numberOfListerners(stream, true),
+            "peaklisteners": streams.numberOfListerners(stream, true),
             "maxlisteners": 9999,
-            "uniquelisteners": streams.numberOfUniqueListerners(stream),
+            "uniquelisteners": streams.numberOfUniqueListerners(stream, true),
             "averagetime": 0,
             "servergenre": streams.getStreamConf(stream).genre,
             "servergenre2": "",
