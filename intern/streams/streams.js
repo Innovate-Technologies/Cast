@@ -320,20 +320,27 @@ const getUniqueListeners = (streamName) => {
     return uniqueListeners
 }
 
-const numberOfListerners = (streamName, admin = false) => {
-    if (config.hideListenerCount && !admin) {
+const numberOfListerners = (streamName) => {
+    if (config.hideListenerCount) {
         return 0
     }
     return getListeners(streamName).length
 }
 
-const numberOfUniqueListerners = (streamName, admin = false) => {
-    if (config.hideListenerCount && !admin) {
+const numberOfUniqueListerners = (streamName) => {
+    if (config.hideListenerCount) {
         return 0
     }
     return getListeners(streamName).length
 }
 
+const realNumberOfListerners = (streamName) => {
+    return getListeners(streamName).length
+}
+
+const realNumberOfUniqueListerners = (streamName) => {
+    return getListeners(streamName).length
+}
 const getPreBuffer = (streamName) => {
     return streamPreBuffer[streamName]
 }
@@ -367,6 +374,8 @@ module.exports.getListeners = getListeners
 module.exports.getUniqueListeners = getUniqueListeners
 module.exports.numberOfListerners = numberOfListerners
 module.exports.numberOfUniqueListerners = numberOfUniqueListerners
+module.exports.realNumberOfListerners = realNumberOfListerners
+module.exports.realNumberOfUniqueListerners = realNumberOfUniqueListerners
 module.exports.getPreBuffer = getPreBuffer
 module.exports.getPastMedatada = getPastMedatada
 module.exports.configFileInfo = configFileInfo
