@@ -20,7 +20,7 @@ export default (app) => {
                 meta,
                 streams: activeStreams,
                 currentStream: stream,
-                listencount: config.hideListenerCount ? false : streams.numberOfListerners(stream),
+                listencount: config.hideListenerCount ? null : streams.numberOfListerners(stream),
                 hostname: config.hostname,
                 geolockIsAllowed,
             }))
@@ -49,7 +49,7 @@ export default (app) => {
                 meta,
                 streams: streams.getActiveStreams(),
                 currentStream: req.params[0],
-                listencount: config.hideListenerCount ? false : streams.numberOfListerners(req.params[0]),
+                listencount: config.hideListenerCount ? null : streams.numberOfListerners(req.params[0]),
                 hostname: config.hostname,
                 geolockIsAllowed,
             }))
