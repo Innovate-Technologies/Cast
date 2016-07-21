@@ -13,6 +13,8 @@ os:
 - linux
 - osx
 script:
+- npm -g install babel-cli
+- babel ./ -d /tmp/testbuild --minified --ignore 'node_modules/'
 - BUILDLOC=`pwd`
 - wget -O /tmp/release-2.2.0.tar.gz https://github.com/megastep/makeself/archive/release-2.2.0.tar.gz && cd /tmp/ && tar -xzf release-2.2.0.tar.gz && cd $BUILDLOC
 - cp `which node` ./node
