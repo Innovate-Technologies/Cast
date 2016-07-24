@@ -1,7 +1,8 @@
 {
   "presets": [
     "es2015-mod",
-    "stage-2"
+    "stage-2",
+    "node6"
   ],
   "plugins": [
     "add-module-exports",
