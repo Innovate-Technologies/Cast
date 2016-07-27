@@ -20,20 +20,26 @@
     "body-parser": "^1.14.2",
     "bytes": "~2.0.1",
     "colors": "~1.1.2",
-    "errorhandler": "~1.3.6",
+    "errorhandler": "1.4.3",
     "exec-stream": "~0.1.0",
     "express": "^4.14.0",
     "geojson": "~0.2.1",
-    "http-auth": "~2.2.8",
+    "http-auth": "2.3.0",
     "http-stack": "~0.1.3",
     "http2": "~3.2.0",
     "jade": "~1.10.0",
     "maxmind": "~0.6.0",
     "restler": "~3.3.0",
     "serve-static": "~1.9.3",
-    "socket.io": "~1.3.5",
+    "socket.io": "1.4.6",
     "stream-stack": "~1.1.4",
     "underscore": "~1.8.3",
-    "xml": "~1.0.0"
-  }
+    "xml": "~1.0.0",
+    "snyk": "^1.17.3"
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }

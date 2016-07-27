@@ -1,0 +1,9 @@
+version: v1.5.0
+ignore: {}
+patch:
+  'npm:request:20160119':
+    - http-auth > htpasswd > prompt > winston > request:
+        patched: '2016-07-27T13:30:21.984Z'
+  'npm:uglify-js:20151024':
+    - jade > transformers > uglify-js:
+        patched: '2016-07-27T13:30:21.984Z'
