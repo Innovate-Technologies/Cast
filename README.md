@@ -73,7 +73,7 @@ If you don't particularly feel Cast is for you, there's always [SHOUTcast](http:
 
 ## Credit
 
-Based off fabulous work done by these wonderful people: [TooTallNate](https://github.com/tootallnate) and [stephen](https://gitub.com/stephen/nicercast).
+Based off fabulous work done by these wonderful people: [TooTallNate](https://github.com/tootallnate) and [stephen](https://github.com/stephen/nicercast).
 
 Thanks to [SHOUTcast](http://shoutcast.com) and [Icecast](http://icecast.org) for the inspiration. We love you guys.
 
