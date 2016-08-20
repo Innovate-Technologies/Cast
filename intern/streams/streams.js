@@ -246,7 +246,7 @@ const listenerTunedIn = (streamName, ip, client, starttime, hls) => {
 
 const listenerTunedOut = (streamName, id) => {
     if (typeof id === "number" && streamListeners[streamName]) {
-        let listener = streamListeners[streamName][id]
+        const listener = streamListeners[streamName][id]
         streamListeners[streamName] = _.without(streamListeners[streamName], listener)
         events.emit("listenerTunedOut", listener)
     }
