@@ -3,6 +3,8 @@ if (!global.streams) {
     global.streams = require("../streams/streams.js")
 }
 
+const ONE_SECOND = 1000
+
 const listener = tcp.createServer((c) => {
     let stream
 
@@ -12,7 +14,12 @@ const listener = tcp.createServer((c) => {
     let gotHeaders = false
     let startedPipe = false
 
+    let connectionTimeout = setTimeout(endConnection, 10 * ONE_SECOND, c)
+
     c.on("data", (data) => {
+        clearTimeout(connectionTimeout)
+        connectionTimeout = setTimeout(endConnection, 10 * ONE_SECOND, c)
+
         const input = data.toString("utf-8").split("\r\n").join("\n");
         if (!gotRequest) {
             const request = input.split(" ")
@@ -150,4 +157,9 @@ const parseGet = (info) => {
 
 export const listenOn = (port) => {
     listener.listen(port)
+}
+
+const endConnection = (c) => {
+    c.end() // sends FIN
+    c.destroy() // destroys socket as other side might be gone
 }

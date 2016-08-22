@@ -3,13 +3,20 @@ if (!global.streams) {
     global.streams = require("../streams/streams.js")
 }
 
+const ONE_SECOND = 1000
+
 const listener = tcp.createServer((c) => {
     let verifiedPasword = false;
     let gotICY = true; // set true to not parse the info if the encoder refuses to wait on our response
     let icy = {}
     let startedPipe = true; // set true to not parse the info if the encoder refuses to wait on our response
     let stream;
+    let connectionTimeout = setTimeout(endConnection, 10 * ONE_SECOND, c)
+
     c.on("data", (data) => {
+        clearTimeout(connectionTimeout)
+        connectionTimeout = setTimeout(endConnection, 10 * ONE_SECOND, c)
+
         if (!verifiedPasword) {
             verifiedPasword = true
             let input = data.toString("utf-8").replace("\r\n", "\n").split("\n");
@@ -79,11 +86,16 @@ module.exports.listenOn = (port) => {
     listener.listen(port)
 }
 
-let parseICY = (input) => {
+const parseICY = (input) => {
     var out = {}
     for (let line of input) {
         let info = line.split(":")
         out[info[0]] = info.slice(1, info.length).join("").replace("\r", "")
     }
     return out
+}
+
+const endConnection = (c) => {
+    c.end() // sends FIN
+    c.destroy() // destroys socket as other side might be gone
 }
