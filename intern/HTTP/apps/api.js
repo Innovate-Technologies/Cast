@@ -24,10 +24,17 @@ export default (app) => {
             res.status(400).json({error: "Invalid API key"})
             return
         }
-        const listeners = []
-        for (let listener of global.streams.getListeners(req.params.stream)) {
-            listeners.push(_.omit(listener, "statsPromise"))
+
+        let listeners
+        if (req.params.stream === "*") {
+            listeners = []
+            for (let stream of global.streams.getActiveStreams()) {
+                listeners = listeners.concat(global.streams.getListeners(stream))
+            }
+        } else {
+            listeners = global.streams.getListeners(req.params.stream)
         }
+
         res.json(listeners)
     })
 
@@ -38,7 +45,16 @@ export default (app) => {
             return
         }
 
-        const listeners = []
+        let listeners
+        if (req.params.stream === "*") {
+            listeners = []
+            for (let stream of global.streams.getActiveStreams()) {
+                listeners = listeners.concat(global.streams.getListeners(stream))
+            }
+        } else {
+            listeners = global.streams.getListeners(req.params.stream)
+        }
+
         for (let listener of global.streams.getUniqueListeners(req.params.stream)) {
             listeners.push(_.omit(listener, "statsPromise"))
         }
