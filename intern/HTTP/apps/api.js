@@ -84,7 +84,12 @@ export default (app) => {
         const geoArray = []
 
         for (let listener of listeners) {
-            geoArray.push({name: listener.client || listener.ip, ip: listener.ip, latitude: listener.location.latitude, longitude: listener.location.longitude})
+            geoArray.push({
+                name: listener.client || listener.ip,
+                ip: listener.ip,
+                latitude: listener.location.latitude,
+                longitude: listener.location.longitude,
+            })
         }
 
         res.setHeader("Content-Type", "application/json");
