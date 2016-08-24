@@ -2,8 +2,8 @@ import stream from "stream"
 import _ from "underscore"
 
 if (config.geoservices && config.geoservices.enabled && !maxmind) {
-    global.maxmind = require("maxmind")
-    if (!global.maxmind.init(global.config.geoservices.maxmindDatabase)) {
+    global.maxmind = require("maxmind").open(global.config.geoservices.maxmindDatabase)
+    if (!maxmind) {
         console.log("Error loading Maxmind Database")
     }
 }
@@ -239,12 +239,14 @@ const listenerTunedIn = (streamName, ip, client, starttime, hls) => {
         id: latestListenerID[streamName],
     }
     if (config.geoservices && config.geoservices.enabled) {
-        var ipInfo = global.maxmind.getLocation(ip)
+        var ipInfo = global.maxmind.get(ip)
         if (ipInfo !== null) {
-            info.country = ipInfo.countryName
+            info.country = ipInfo.country.names.en
+            info.countryCode = ipInfo.country.iso_code
             info.location = {
-                "latitude": ipInfo.latitude,
-                "longitude": ipInfo.longitude,
+                "latitude": ipInfo.location.latitude,
+                "longitude": ipInfo.location.longitude,
+                "accuracy": ipInfo.location.accuracy_radius,
             }
         }
     }
