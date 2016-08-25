@@ -1,4 +1,4 @@
-if (config.geolock && config.geolock.enabled && !maxmind) {
+if (config.geolock && config.geolock.enabled && !global.maxmind) {
     global.maxmind = require("maxmind").open(global.config.geolock.maxmindDatabase)
     if (!maxmind) {
         console.log("Error loading Maxmind Database")

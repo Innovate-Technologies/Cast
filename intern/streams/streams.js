@@ -1,7 +1,7 @@
 import stream from "stream"
 import _ from "underscore"
 
-if (config.geoservices && config.geoservices.enabled && !maxmind) {
+if (config.geoservices && config.geoservices.enabled && !global.maxmind) {
     global.maxmind = require("maxmind").open(global.config.geoservices.maxmindDatabase)
     if (!maxmind) {
         console.log("Error loading Maxmind Database")
