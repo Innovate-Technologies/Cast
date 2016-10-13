@@ -32,7 +32,7 @@
     "restler": "~3.3.0",
     "serve-static": "~1.9.3",
     "snyk": "^1.17.3",
-    "socket.io": "1.4.6",
+    "socket.io": "1.5.0",
     "stream-stack": "~1.1.4",
     "underscore": "~1.8.3",
     "xml": "~1.0.0"
