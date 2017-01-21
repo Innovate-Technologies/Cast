@@ -1,6 +1,7 @@
 require("babel-polyfill");
 require("babel-register");
 require("colors");
+process.binding("http_parser").HTTPParser = require("http-parser-js").HTTPParser; // fixes bug in http client
 
 console.log("Cast 1.0 ".rainbow);
 
