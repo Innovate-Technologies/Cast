@@ -155,6 +155,14 @@ export default function (app) {
                 res.status(400).send("Not supported")
         }
     })
+
+    app.get("/stream/:sid", (req, res) => {
+        const stream = sidToStream(req.params.sid)
+        res.redirect(`/streams/${stream}`)
+    })
+    app.get("/;", (req, res) => { // we didn't want but we must
+        res.redirect(`/streams/${streams.primaryStream}`)
+    })
 }
 
 // functions used for the calls
