@@ -32,11 +32,15 @@
     "pug": "^2.0.0-beta6",
     "restler": "~3.3.0",
     "serve-static": "~1.9.3",
-    "snyk": "^1.17.3",
-    "socket.io": "1.5.0",
+    "snyk": "^1.30.0",
+    "socket.io": "1.7.3",
     "stream-stack": "~1.1.4",
     "underscore": "~1.8.3",
     "xml": "~1.0.0"
   },
-  "snyk": true
+  "snyk": true,
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  }
 }
