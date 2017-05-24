@@ -31,3 +31,8 @@ patch:
         patched: '2016-07-27T13:42:15.366Z'
     - socket.io > socket.io-client > engine.io-client > ws:
         patched: '2016-07-27T13:42:15.366Z'
+  'npm:ms:20170412':
+    - socket.io > socket.io-adapter > debug > ms:
+        patched: '2017-05-24T04:02:13.350Z'
+    - socket.io > socket.io-client > debug > ms:
+        patched: '2017-05-24T04:02:13.350Z'
