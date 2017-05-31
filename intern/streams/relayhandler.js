@@ -4,6 +4,7 @@ import icy from "./icy"
 
 export const relayStream = (desinationStream, relayUrl) => {
     let http
+    let gotData = false;
     const urlInfo = url.parse(relayUrl)
     if (urlInfo.protocol === "https:") {
         http = require("https")
@@ -16,7 +17,7 @@ export const relayStream = (desinationStream, relayUrl) => {
         path: urlInfo.path,
         headers: {
             "user-agent": `Cast/${global.cast.version}`,
-            "icy-metadata": 1,
+           // "icy-metadata": 1,
         },
     }, (res) => {
         let useicy = false;
@@ -33,7 +34,8 @@ export const relayStream = (desinationStream, relayUrl) => {
         let inputStream = null
         const outputStream = new stream.PassThrough();
         if (useicy) {
-            inputStream = new icy.IcecastReadStack(res, metadataint)
+            //inputStream = new icy.IcecastReadStack(res, metadataint)
+            inputStream = res
         } else {
             inputStream = res
         }
@@ -49,6 +51,7 @@ export const relayStream = (desinationStream, relayUrl) => {
         })
 
         inputStream.on("data", (data) => {
+            gotData = true
             outputStream.write(data)
         })
         inputStream.on("metadata", (data) => {
@@ -67,11 +70,20 @@ export const relayStream = (desinationStream, relayUrl) => {
             }
             streams.setStreamMetadata(desinationStream, meta)
         })
+
         inputStream.on("end", () => {
             outputStream.end()
             streams.removeStream(desinationStream)
             setTimeout(relayStream, 10000, desinationStream, relayUrl)
         })
+
+        const checkInterval = setInterval(() => { // check every 5 seconds to see if we got new data
+            if (!gotData) {
+                inputStream.destroy()
+                clearInterval(checkInterval)
+            }
+            gotData = false
+        }, 5000)
     }).on("error", (e) => {
         console.error(e);
     });
