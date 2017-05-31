@@ -17,7 +17,7 @@ export const relayStream = (desinationStream, relayUrl) => {
         path: urlInfo.path,
         headers: {
             "user-agent": `Cast/${global.cast.version}`,
-           // "icy-metadata": 1,
+            "icy-metadata": 1,
         },
     }, (res) => {
         let useicy = false;
@@ -34,8 +34,7 @@ export const relayStream = (desinationStream, relayUrl) => {
         let inputStream = null
         const outputStream = new stream.PassThrough();
         if (useicy) {
-            //inputStream = new icy.IcecastReadStack(res, metadataint)
-            inputStream = res
+            inputStream = new icy.IcecastReadStack(res, metadataint)
         } else {
             inputStream = res
         }
