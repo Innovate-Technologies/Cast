@@ -13,6 +13,7 @@ os:
 - linux
 - osx
 script:
+- npm test
 - npm -g install babel-cli
 - babel ./ -d /tmp/testbuild --minified --ignore 'node_modules/'
 - BUILDLOC=`pwd`

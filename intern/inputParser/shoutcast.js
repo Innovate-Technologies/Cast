@@ -91,7 +91,7 @@ const listener = tcp.createServer((c) => {
 })
 
 module.exports.listenOn = (port) => {
-    listener.listen(port)
+    return listener.listen(port)
 }
 
 const parseICY = (input) => {

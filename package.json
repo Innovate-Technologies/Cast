@@ -41,6 +41,21 @@
   "snyk": true,
   "scripts": {
     "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "prepublish": "npm run snyk-protect",
+    "test": "ava"
+  },
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "nyc": "^11.0.1",
+    "sinon": "^2.3.2"
+  }, 
+  "ava": {
+    "files": [
+      "tests/*.js"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
   }
 }
