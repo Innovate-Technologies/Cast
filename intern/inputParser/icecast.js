@@ -15,7 +15,6 @@ const listener = tcp.createServer((c) => {
     let startedPipe = false
 
 
-
     c.on("data", (data) => {
         const input = data.toString("utf-8").split("\r\n").join("\n");
         if (!gotRequest) {
@@ -67,23 +66,23 @@ const listener = tcp.createServer((c) => {
                     if (request[id].toLowerCase().indexOf("100-continue") > -1) {
                         continueNeeded = true
                     }
-                    if (request[id].indexOf("ice-name") > -1) {
-                        info.name = request[id].replace("ice-name:", "").trim()
+                    if (request[id].toLowerCase().indexOf("ice-name") > -1) {
+                        info.name = request[id].replace(/ice-name:/ig, "").trim()
                     }
-                    if (request[id].indexOf("ice-bitrate") > -1) {
-                        info.bitrate = request[id].replace("ice-bitrate:", "").trim()
+                    if (request[id].toLowerCase().indexOf("ice-bitrate") > -1) {
+                        info.bitrate = request[id].replace(/ice-bitrate:/ig, "").trim()
                     }
-                    if (request[id].indexOf("ice-genre") > -1) {
-                        info.genre = request[id].replace("ice-genre:", "").trim()
+                    if (request[id].toLowerCase().indexOf("ice-genre") > -1) {
+                        info.genre = request[id].replace(/ice-genre:/ig, "").trim()
                     }
-                    if (request[id].indexOf("ice-url") > -1) {
-                        info.url = request[id].replace("ice-url:", "").trim()
+                    if (request[id].toLowerCase().indexOf("ice-url") > -1) {
+                        info.url = request[id].replace(/ice-url:/ig, "").trim()
                     }
-                    if (request[id].indexOf("ice-description") > -1) {
-                        info.description = request[id].replace("ice-description:", "").trim()
+                    if (request[id].toLowerCase().indexOf("ice-description") > -1) {
+                        info.description = request[id].replace(/ice-description:/ig, "").trim()
                     }
-                    if (request[id].indexOf("Content-Type") > -1) {
-                        info.contentType = request[id].replace("Content-Type:", "").trim()
+                    if (request[id].toLowerCase().indexOf("content-type") > -1) {
+                        info.contentType = request[id].replace(/content-type:/ig, "").trim()
                     }
                 }
             }
@@ -106,7 +105,7 @@ const listener = tcp.createServer((c) => {
             }
 
             if (info.contentType !== "audio/mpeg" && info.contentType !== "audio/aacp") {
-                c.write("HTTP/1.1 403 Content-type not supported\n")
+                c.write("HTTP/1.1 403 Content-type not supported\n\n")
                 return c.end()
             }
 
@@ -160,5 +159,5 @@ const parseGet = (info) => {
 
 
 export const listenOn = (port) => {
-    listener.listen(port)
+    return listener.listen(port)
 }
