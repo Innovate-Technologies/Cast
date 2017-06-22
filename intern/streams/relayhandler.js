@@ -4,6 +4,7 @@ import icy from "./icy"
 
 export const relayStream = (desinationStream, relayUrl) => {
     let http
+    let gotData = false;
     const urlInfo = url.parse(relayUrl)
     if (urlInfo.protocol === "https:") {
         http = require("https")
@@ -49,6 +50,7 @@ export const relayStream = (desinationStream, relayUrl) => {
         })
 
         inputStream.on("data", (data) => {
+            gotData = true
             outputStream.write(data)
         })
         inputStream.on("metadata", (data) => {
@@ -67,11 +69,20 @@ export const relayStream = (desinationStream, relayUrl) => {
             }
             streams.setStreamMetadata(desinationStream, meta)
         })
+
         inputStream.on("end", () => {
             outputStream.end()
             streams.removeStream(desinationStream)
             setTimeout(relayStream, 10000, desinationStream, relayUrl)
         })
+
+        const checkInterval = setInterval(() => { // check every 5 seconds to see if we got new data
+            if (!gotData) {
+                inputStream.destroy()
+                clearInterval(checkInterval)
+            }
+            gotData = false
+        }, 5000)
     }).on("error", (e) => {
         console.error(e);
     });

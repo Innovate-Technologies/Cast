@@ -1,6 +1,6 @@
 {
   "name": "Cast",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "description": "Innovative, hackable and compatible streaming",
   "main": "server.js",
   "author": "Innovate Technologies",
@@ -33,7 +33,8 @@
     "restler": "~3.3.0",
     "serve-static": "~1.12.3",
     "snyk": "^1.30.1",
-    "socket.io": "2.0.0",
+    "socket.io": "^2.0.2",
+    "socket.io-client": "^2.0.2",
     "stream-stack": "~1.1.4",
     "underscore": "~1.8.3",
     "xml": "~1.0.0"

@@ -85,12 +85,9 @@
         "no-new-require": 2,
         "no-sync": 0
     },
-
-    // ES6 modules
-    "ecmaFeatures": {
-        "modules": true
+    "parserOptions": {
+        "sourceType": "module"
     },
-
     // Environments
     "env": {
         "node": true,
