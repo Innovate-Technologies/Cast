@@ -27,7 +27,6 @@ test.serial.cb("Test connect with incorrect password", t => {
 })
 
 
-
 test.serial.cb("Test connect with correct password but stream in use", t => {
     global.streams = {}
     global.streams.isStreamInUse = sinon.stub().returns(true);
@@ -46,7 +45,6 @@ test.serial.cb("Test connect with correct password but stream in use", t => {
     socket.write("correct\n")
 
     socket.on("data", (data) => {
-        console.log(data.toString())
         t.is(data.toString(), "Other source is connected\n")
         listener.close()
         t.end()
