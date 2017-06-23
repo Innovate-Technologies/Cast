@@ -2,7 +2,6 @@ import geojson from "geojson"
 import _ from "underscore"
 
 export default (app) => {
-
     app.get("/api/version", (req, res) => {
         res.json({version: global.cast.version})
     })
@@ -45,18 +44,13 @@ export default (app) => {
             return
         }
 
-        let listeners
+        let listeners = []
         if (req.params.stream === "*") {
-            listeners = []
             for (let stream of global.streams.getActiveStreams()) {
-                listeners = listeners.concat(global.streams.getListeners(stream))
+                listeners = listeners.concat(global.streams.getUniqueListeners(stream))
             }
         } else {
-            listeners = global.streams.getListeners(req.params.stream)
-        }
-
-        for (let listener of global.streams.getUniqueListeners(req.params.stream)) {
-            listeners.push(_.omit(listener, "statsPromise"))
+            listeners = global.streams.getUniqueListeners(req.params.stream)
         }
 
         res.json(listeners)
