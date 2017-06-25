@@ -299,28 +299,9 @@ const getUniqueListeners = (streamName) => {
     if (!streamListeners[streamName]) {
         return []
     }
-    const listeners = getListeners(streamName)
-    let listenersWithUniqueCriteria = []
-
-    for (let listener of listeners) {
-        listenersWithUniqueCriteria.push({
-            stream: listener.stream,
-            client: listener.client,
-            ip: listener.ip,
-        })
-    }
-
-    let uniqueListeners = []
-
-    for (let id in listenersWithUniqueCriteria) {
-        if (listenersWithUniqueCriteria.hasOwnProperty(id)) {
-            if (listenersWithUniqueCriteria.indexOf(listenersWithUniqueCriteria[id]) === parseInt(id, 10)) {
-                uniqueListeners.push(listeners[id])
-            }
-        }
-    }
-
-    return uniqueListeners
+    return _.uniq(getListeners(streamName), (item) => { 
+        return item.stream + item.client + item.ip;
+    })
 }
 
 const numberOfListerners = (streamName) => {
