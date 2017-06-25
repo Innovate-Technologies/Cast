@@ -1,5 +1,4 @@
 import test from "ava"
-import sinon from "sinon"
 import stream from "stream"
 import EventEmitter from "events"
 class Events extends EventEmitter {}
