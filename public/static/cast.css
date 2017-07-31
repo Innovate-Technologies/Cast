@@ -3,6 +3,7 @@
 */
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300italic,400,600);
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
 /* Include Diavlo Light */
 @font-face {
     font-family: 'Diavlo Light';
@@ -12,13 +13,6 @@
         url('fonts/Diavlo-Light-Regular.ttf.eot?#iefix') format('embedded-opentype');
     font-weight: normal;
     font-style: normal;
-}
-
-/* Links */
-a,
-a:focus,
-a:hover {
-    color: #fff;
 }
 
 /* Custom default button */
@@ -39,12 +33,12 @@ a:hover {
 html,
 body {
     height: 100%;
-    background-color: #333;
+    font-family: 'Lato', sans-serif;
 }
 body {
-    color: #fff;
-    text-align: center;
-    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+    color: rgb(226, 52, 113);
+    text-align: left;
+    position: relative;
 }
 
 /* Extra markup and styles for table-esque vertical and horizontal centering */
@@ -53,8 +47,8 @@ body {
     width: 100%;
     height: 100%; /* For at least Firefox */
     min-height: 100%;
-    -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
-    box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+    position: relative;
+    z-index: 100;
 }
 .site-wrapper-inner {
     display: table-cell;
@@ -63,6 +57,22 @@ body {
 .cover-container {
     margin-right: auto;
     margin-left: auto;
+}
+
+#bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -100;
+    width: 100%;
+    height: 100%;
+}
+
+.triangle {
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(80% 0%, 100% 0%, 100% 100%, 60% 100%);
+    background-color:  rgb(25, 26, 37);
 }
 
 /* Padding for spacing */
@@ -79,6 +89,8 @@ body {
     margin-bottom: 10px;
     font-family: 'Diavlo Light';
     font-size: 35px;
+    color: rgb(171, 171, 171);
+    float: left;
 }
 
 .masthead-nav > li {
@@ -92,8 +104,6 @@ body {
     padding-left: 0;
     font-size: 16px;
     font-weight: bold;
-    color: #fff; /* IE8 proofing */
-    color: rgba(255,255,255,.75);
     border-bottom: 2px solid transparent;
 }
 .masthead-nav > li > a:hover,
@@ -109,83 +119,115 @@ body {
     border-bottom-color: #fff;
 }
 
-@media (min-width: 768px) {
-    .masthead-brand {
-        float: left;
-    }
-    .masthead-nav {
-        float: right;
-    }
-}
-
-
-/*
-* Cover
-*/
-
 .cover {
     padding: 0 20px;
 }
-.cover .btn-lg {
-    padding: 10px 20px;
-    font-weight: bold;
+
+.btn-circle.btn-xl {
+    width: 100px;
+    height: 100px;
+    padding: 10px 16px;
+    font-size: 24px;
+    line-height: 1.33;
+    border-radius: 50px;
+    left: 66%;
+    top: 50%;
+    position: absolute;
+    background-image: linear-gradient(245deg, rgb(181,56,123) 0%, rgb(227,51,113) 100%);
+    border: none;
+    font-size: 40px;
 }
 
-
-/*
-* Footer
-*/
-
-.mastfoot {
-    color: #999; /* IE8 proofing */
-    color: rgba(255,255,255,.5);
+.cover-heading {
+    font-size: 50px;
 }
 
+.play {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 50px 0 50px 86.6px;
+    border-color: transparent transparent transparent #007bff;
+}
 
-/*
-* Affix and center
-*/
+.label-default {
+    width: 108px;
+    font-size: 100%;
+    background-image: linear-gradient( 180deg, rgb(34,36,55) 0%, rgb(40,41,66) 100%);
+    box-shadow: 0px 3px 14.55px 0.45px rgba(183, 183, 183, 0.76);
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
 
-@media (min-width: 768px) {
-    /* Pull out the header and footer */
-    .masthead {
-        position: fixed;
-        top: 0;
+.label-text {
+    color: rgb(25, 26, 37);
+}
+
+.nowPlaying {
+    margin-bottom: 10px;
+    margin-top: 100px;
+}
+
+.col-xs-12 {
+    padding-left: 0px;
+}
+
+.col-sm-8 {
+    padding-left: 5px;
+}
+
+.row {
+    margin-left: 0px;
+}
+
+.site-wrapper-inner {
+    vertical-align: middle;
+}
+
+.masthead {
+    position: fixed;
+    top: 0;
+}
+
+.masthead-nav {
+    float: right;
+}
+
+@media (max-width: 650px) {
+    .cover-heading {
+        font-size: 30px;
     }
-    .mastfoot {
-        position: fixed;
-        bottom: 0;
+    .col-xs-8 {
+        width: 50%
     }
-    /* Start the vertical centering */
-    .site-wrapper-inner {
-        vertical-align: middle;
-    }
-    /* Handle the widths */
-    .masthead,
-    .mastfoot,
-    .cover-container {
-        width: 100%; /* Must be percentage or pixels for horizontal alignment */
+    .col-xs-12>span {
+        width: 50%;
+        display: inline-block;
     }
 }
+
+@media(max-width: 1024px) {
+    .masthead-brand {
+        float: none;
+    }
+    .masthead-nav {
+        float: left;
+    }
+    .masthead-nav>li>a{
+        color: rgb(25, 26, 37);
+    }
+    .masthead-nav > .active > a, .masthead-nav > .active > a:hover, .masthead-nav > .active > a:focus {
+        color: rgb(25, 26, 37);
+        border-bottom-color: rgb(25, 26, 37);
+    }
+}
+
 
 @media (min-width: 992px) {
     .masthead,
     .mastfoot,
     .cover-container {
-        width: 700px;
+        width: 95%;
     }
-}
-
-
-.btn-circle.btn-xl {
-    width: 70px;
-    height: 70px;
-    padding: 10px 16px;
-    font-size: 24px;
-    line-height: 1.33;
-    border-radius: 35px;
-}
-
-.listencount{
-    padding-top:20px;
 }

@@ -15,10 +15,6 @@ socket.on("metadata", function onMetadataUpdate(msg) {
 socket.on("listenerCountChange", function onListenerCountChange (msg) {
     var countElement = document.getElementById("listencount-" + msg.stream);
     if (countElement !== null) {
-        if (msg.count === 1) {
-            countElement.textContent = "1 person is listening right now.";
-        } else {
-            countElement.textContent = msg.count + " people are listening right now.";
-        }
+        countElement.textContent = msg.count
     }
 });

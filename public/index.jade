@@ -4,12 +4,15 @@ html(lang="en")
     title Cast
     link(href="/static/bootstrap.min.css",rel="stylesheet")
     link(href="/static/font-awesome.min.css",rel="stylesheet")
+    link(href="/static/fontello.css",rel="stylesheet")
     link(href="/static/cast.css",rel="stylesheet")
     script(src="/static/player.js")
     script(src="/socket.io/socket.io.js")
     script(src="/static/realtimeSongInfo.js")
     meta(name="viewport",content="width=device-width, initial-scale=1")
   body
+    #bg
+        div.triangle
     #site.site-wrapper
         #site-inner.site-wrapper-inner
             #container.cover-container
@@ -33,13 +36,20 @@ html(lang="en")
                         if isStreaming
                             h1.cover-heading #{streamInfo.name}
                             p.lead(id="djname-"+currentStream) #{meta.djname}
-                            p.lead(id="meta-"+currentStream) #{meta.song}
                             button.btn.btn-success.btn-circle.btn-xl(onClick="pressedPlayButton('"+hostname+"/streams/"+currentStream+"')")
-                                i.fa.fa-play#playStopButton
+                                i.icon-play#playStopButton
+                            if meta.song !== null && meta.song !== ""
+                                div.nowPlaying.row
+                                    div.label.label-default.col-xs-4
+                                        i.fa.fa-microphone
+                                        span &nbsp;Now Playing
+                                    div.col-xs-12.col-sm-8.label-text
+                                        span(id="meta-"+currentStream) #{meta.song}
                             if listencount !== null
-                                if listencount==1
-                                    p.listencount(id="listencount-"+currentStream) 1 person is listening right now.
-                                else
-                                    p.listencount(id="listencount-"+currentStream) #{listencount} people are listening right now.
+                                div.row
+                                    div.label.label-default.col-xs-4
+                                        i.fa.fa-users
+                                        span &nbsp;Listeners
+                                    div.col-xs-12.col-sm-8.label-text(id="listencount-"+currentStream) #{listencount}
                         else
                             h1.cover-heading No streams found.

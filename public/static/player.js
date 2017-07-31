@@ -20,13 +20,13 @@ var audio = null;
 
 var pressedPlayButton = function (stream) {
     if (audio === null) {
-        document.getElementById('playStopButton').className = 'fa fa-stop';
+        document.getElementById("playStopButton").className = "icon-stop";
         audio = new Audio(stream);
         audio.play();
     } else {
-        document.getElementById('playStopButton').className = 'fa fa-play';
+        document.getElementById("playStopButton").className = "icon-play";
         audio.pause();
-        audio.src = '';
+        audio.src = "";
         audio = null;
     }
 };
