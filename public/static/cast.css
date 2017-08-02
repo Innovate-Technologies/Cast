@@ -106,6 +106,7 @@ body {
     font-size: 16px;
     font-weight: bold;
     border-bottom: 2px solid transparent;
+    color: white;
 }
 .masthead-nav > li > a:hover,
 .masthead-nav > li > a:focus {
@@ -214,7 +215,7 @@ body {
     }
 }
 
-@media(max-width: 1024px) {
+@media(max-width: 1400px) {
     .masthead-brand {
         float: none;
     }
