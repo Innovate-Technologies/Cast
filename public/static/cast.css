@@ -65,7 +65,7 @@ body {
     left: 0;
     z-index: -100;
     width: 100%;
-    height: 100%;1
+    height: 100%;
 }
 
 .triangle {
@@ -131,7 +131,7 @@ body {
     font-size: 24px;
     line-height: 1.33;
     border-radius: 50px;
-    left: 66%;
+    left: 65%;
     top: 50%;
     position: absolute;
     background-image: linear-gradient(245deg, rgb(181,56,123) 0%, rgb(227,51,113) 100%);
@@ -208,6 +208,9 @@ body {
     .col-xs-12>span {
         width: 50%;
         display: inline-block;
+    }
+    .btn-circle.btn-xl {
+        left: 70%;
     }
 }
 
