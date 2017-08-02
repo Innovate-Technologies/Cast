@@ -202,6 +202,9 @@ body {
     .col-xs-8 {
         width: 50%
     }
+    .col-xs-12 {
+        padding-left: 0px;
+    }
     .col-xs-12>span {
         width: 50%;
         display: inline-block;
