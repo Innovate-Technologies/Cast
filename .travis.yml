@@ -6,7 +6,7 @@ env:
     global:
       - CXX=g++-4.8
       - QEMU_VER=v2.9.1
-      - DOCKER_REPO=harbor.innovatete.ch/maartje/trainplanner
+      - DOCKER_REPO=innovate/cast
     matrix:
       - ARCH=amd64 ARCHREPO=amd64   QEMU_ARCH=x86_64
       - ARCH=armhf ARCHREPO=arm32v7 QEMU_ARCH=arm    
@@ -31,9 +31,15 @@ script:
 - npm test
 - npm -g install babel-cli
 - babel ./ -d /tmp/testbuild --minified --ignore 'node_modules/'
-- npm install
 - git reset --hard
 - rm -fr node_modules/
 - wget -N https://github.com/multiarch/qemu-user-static/releases/download/$QEMU_VER/x86_64_qemu-${QEMU_ARCH}-static.tar.gz
 - tar -xvf x86_64_qemu-${QEMU_ARCH}-static.tar.gz
 - docker build -t $DOCKER_REPO:$ARCH-$TRAVIS_COMMIT --build-arg ARCHREPO="$ARCHREPO" --build-arg QEMU_ARCH="$QEMU_ARCH" ./
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin 
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then docker push $DOCKER_REPO:$ARCH-$TRAVIS_COMMIT ; fi
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then docker tag $DOCKER_REPO:$ARCH-$TRAVIS_COMMIT $DOCKER_REPO:$ARCH-master; docker push $DOCKER_REPO:$ARCH-master ; fi
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then docker tag $DOCKER_REPO:$ARCH-$TRAVIS_COMMIT $DOCKER_REPO:$ARCH-master; docker push $DOCKER_REPO:$ARCH-master ; fi
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_TAG" != "" ]; then docker tag $DOCKER_REPO:$ARCH-$TRAVIS_COMMIT $DOCKER_REPO:$ARCH-$TRAVIS_TAG; docker push $DOCKER_REPO:$ARCH-$TRAVIS_TAG ; fi
