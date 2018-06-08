@@ -268,7 +268,7 @@ export default (app) => {
         }
 
         global.streams.hlsLastHit[stream][req.query.id] = Math.round((new Date()).getTime() / 1000)
-        res.setHeader("Content-Type", "audio/x-mpegurl")
+        res.setHeader("Content-Type", "application/vnd.apple.mpegurl")
         let response = `#EXTM3U\n#EXT-X-VERSION:5\n#EXT-X-TARGETDURATION:5\n#EXT-X-MEDIA-SEQUENCE:${global.streams.hlsDeleteCount[stream]}\n`
         for (let index of global.streams.hlsIndexes[stream]) {
             response += `#EXTINF:2.0,\n${global.config.hostname}/hls/${stream}/${index}?id=${req.query.id}\n`
