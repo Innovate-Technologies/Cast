@@ -14,7 +14,7 @@
     "babel-polyfill": "^6.9.1",
     "babel-preset-es2015-mod": "^6.6.0",
     "babel-preset-node6": "^11.0.0",
-    "babel-preset-stage-2": "^6.11.0",
+    "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.11.5",
     "babel-root-import": "^4.0.1",
     "body-parser": "^1.14.2",
