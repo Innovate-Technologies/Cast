@@ -46,6 +46,6 @@ export default class HLSHandler {
 
     stop() {
         this.process.kill()
-        rimraf(this.tempPath)
+        rimraf(this.tempPath, () => {})
     }
 }
