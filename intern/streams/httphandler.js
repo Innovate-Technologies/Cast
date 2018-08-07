@@ -280,13 +280,7 @@ export default (app, wrap) => {
         let playlist = await readFile(`${global.streams.hlsHanders[stream].tempPath}/hls.m3u8`, "utf8")
         playlist = playlist.replace(/\.ts/g, `.ts?id=${req.query.id}`)
 
-        res.writeHead(200, {
-            "Content-Type": "application/vnd.apple.mpegurl",
-        })
-
-        //TODO: set headers
-        res.write(playlist)
-        res.end()
+        res.type("application/vnd.apple.mpegurl").send(playlist)
     }
 
 }

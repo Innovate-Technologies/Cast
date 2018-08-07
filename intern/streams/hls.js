@@ -35,7 +35,7 @@ export default class HLSHandler {
             `${this.tempPath}/hls.m3u8`
         ],
         { 
-            stdio: ['pipe', null, null]
+            stdio: ['pipe', process.stdout, process.stdout]
         });
     
         this.inputStream.pipe(this.process.stdin);
