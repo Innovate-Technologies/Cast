@@ -27,7 +27,7 @@ const listener = tcp.createServer((c) => {
                 let updateStream
                 for (let header of requestArray) {
                     if (header.toLowerCase().includes("authorization")) {
-                        let authBuffer = new Buffer(header.split(":")[1].replace("Basic", "").trim(), "base64")
+                        let authBuffer = Buffer.from(header.split(":")[1].replace("Basic", "").trim(), "base64")
                         let authArray = authBuffer.toString().split(":")
                         delete authArray[0]
                         let password = authArray.join("")
@@ -90,7 +90,7 @@ const listener = tcp.createServer((c) => {
                 c.write("HTTP/1.1 401 You need to authenticate\n\n")
                 return c.end()
             }
-            let authBuffer = new Buffer(request[indexOfAuth].split(":")[1].replace("Basic", "").trim(), "base64")
+            let authBuffer = Buffer.from(request[indexOfAuth].split(":")[1].replace("Basic", "").trim(), "base64")
             let authArray = authBuffer.toString().split(":")
             delete authArray[0]
             let password = authArray.join("")

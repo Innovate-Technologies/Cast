@@ -8,7 +8,7 @@ const indexPage = pug.compile(fs.readFileSync(localdir + "/public/index.jade"));
 export default (app) => {
     app.get("/", (req, res) => {
         // Index page
-        const geolockIsAllowed = geolock.isAllowed(req.ip)
+        const geolockIsAllowed = geolock.isAllowed(req.processedIP)
         const activeStreams = streams.getActiveStreams()
         if (activeStreams.length > 0) {
             const stream = streams.isStreamInUse(streams.primaryStream) ? streams.primaryStream : activeStreams[0]
@@ -33,7 +33,7 @@ export default (app) => {
     })
 
     app.get("/pub/:stream", (req, res) => {
-        var geolockIsAllowed = geolock.isAllowed(req.ip)
+        var geolockIsAllowed = geolock.isAllowed(req.processedIP)
         if (!req.params.stream || !streams.isStreamInUse(req.params.stream)) {
             res.send(indexPage({
                 isStreaming: false,
@@ -48,7 +48,7 @@ export default (app) => {
                 meta,
                 streams: streams.getActiveStreams(),
                 currentStream: req.params.stream,
-                listencount: config.hideListenerCount ? null : streams.numberOfListerners(req.params[0]),
+                listencount: config.hideListenerCount ? null : streams.numberOfListerners(req.params.stream),
                 hostname: config.hostname,
                 geolockIsAllowed,
             }))

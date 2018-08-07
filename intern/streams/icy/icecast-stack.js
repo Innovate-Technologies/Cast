@@ -9,7 +9,7 @@ exports.__defineGetter__('META_BLOCK_SIZE', function() { return META_BLOCK_SIZE;
 
 // Usually, there will be no metadata event to inject (on the WriteStack), so
 // a single byte 0 is sent indicating 0 bytes of metadata.
-const NO_METADATA_BYTE = new Buffer(1);
+const NO_METADATA_BYTE = Buffer.alloc(1);
 NO_METADATA_BYTE[0] = 0;
 
 /**
@@ -42,7 +42,7 @@ exports.IcecastReadStack = IcecastReadStack;
 inherits(IcecastReadStack, StreamStack);
 
 exports.appendBuffer = function(a, b) {
-  var temp = new Buffer(a.length + b.length);
+  var temp = Buffer.alloc(a.length + b.length);
   a.copy(temp, 0, 0);
   b.copy(temp, a.length, 0);
   return temp;
@@ -177,7 +177,7 @@ IcecastWriteStack.prototype.queueMetadata = function(metadata) {
   var metaLength = Math.min(255, Math.ceil(metadata.length/META_BLOCK_SIZE));
   // Create a new Buffer that will contain the inital metalength byte, then
   // the metadata itself, and then will pad the rest of the Buffer with null bytes.
-  var metaBuf = new Buffer((metaLength * META_BLOCK_SIZE)+1);
+  var metaBuf = Buffer.alloc((metaLength * META_BLOCK_SIZE)+1);
   metaBuf[0] = metaLength;
   var end = metaBuf.write(metadata, 1) + 1;
   if (end < metaBuf.length) {
@@ -198,7 +198,7 @@ IcecastWriteStack.prototype.queueMetadata = function(metadata) {
  */
 IcecastWriteStack.prototype.write = function(chunk, enc) {
   if (!Buffer.isBuffer(chunk)) {
-    chunk = new Buffer(chunk, enc);
+    chunk = Buffer.from(chunk, enc);
   }
   this._writeAudioChunk(chunk);
 }

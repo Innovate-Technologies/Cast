@@ -46,7 +46,7 @@ export default (app) => {
         if (!req.headers.Authorization) {
             return res.status(401).send()
         }
-        const password = new Buffer(req.headers.Authorization.replace("Basic", "").trim(), "base64").toString()
+        const password = Buffer.from(req.headers.Authorization.replace("Basic", "").trim(), "base64").toString()
         if (!streams.streamPasswords.hasOwnProperty(password)) {
             return res.status(401).send()
         }

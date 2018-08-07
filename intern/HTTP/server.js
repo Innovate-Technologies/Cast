@@ -31,6 +31,14 @@ app.use((req, res, next) => {
     next()
 })
 
+app.use((req, res, next) => {
+    req.processedIP = req.ip
+    if (req.ip && req.ip.match("^::ffff:")) {
+        req.processedIP = req.processedIP.replace("::ffff:", "")
+    }
+    next();
+});
+
 for (let file of fs.readdirSync(global.localdir + "/intern/HTTP/apps/")) {
     require(global.localdir + "/intern/HTTP/apps/" + file)(app)
 }

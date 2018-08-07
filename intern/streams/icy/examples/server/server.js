@@ -266,7 +266,7 @@ http.createServer(function(req, res) {
       var auth = req.headers.authorization;
       var ct = req.headers['x-current-track'];
       if (ct && auth && auth.substring(0, 6) == "Basic " &&
-          Buffer(auth.substring(6),'base64').toString('ascii') == 'node:rules') {
+          Buffer.from(auth.substring(6),'base64').toString('ascii') == 'node:rules') {
 
         stdin.emit('metadata', ct.trim(), req.headers['x-duration']);
         res.writeHead(200, {

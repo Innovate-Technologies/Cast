@@ -16,7 +16,7 @@ export default (app, wrap) => {
 
     // classic stream clients use HEAD calls to get stream info
     app.head("/streams/:stream", (req, res) => {
-        if (!geolock.isAllowed(req.ip)) {
+        if (!geolock.isAllowed(req.processedIP)) {
             return res.status(401).send()
         }
         if (!req.params.stream) {
@@ -68,7 +68,7 @@ export default (app, wrap) => {
 
     // HLS stream handler
     app.get("/hls/:stream/:file", wrap(async (req, res) => {
-        if (!geolock.isAllowed(req.ip)) {
+        if (!geolock.isAllowed(req.processedIP)) {
             return res.status(401).send("Your country is not allowed to tune in to the stream")
         }
         if (!global.streams.streamExists(req.params.stream)) {
@@ -79,7 +79,7 @@ export default (app, wrap) => {
             return serveM3U8ForStream(req.params.stream, req, res)
         }
        
-       if (!req.query.id || !global.streams.listenerIdExists(req.params.stream, req.query.id, req.ip, req.headers["user-agent"])) {
+       if (!req.query.id || !global.streams.listenerIdExists(req.params.stream, req.query.id, req.processedIP, req.headers["user-agent"])) {
             return res.status(401).send("Invalid id")
         }
 
@@ -105,7 +105,7 @@ export default (app, wrap) => {
     // Classic stream handler
     app.get("/streams/:stream", (req, res) => {
 
-        if (!geolock.isAllowed(req.ip)) {
+        if (!geolock.isAllowed(req.processedIP)) {
             return res.status(401).send("Your country is not allowed to tune in to the stream")
         }
 
@@ -165,7 +165,7 @@ export default (app, wrap) => {
             headers["icy-metaint"] = 8192;
         }
 
-        var listenerID = global.streams.listenerTunedIn(req.params.stream, req.ip, req.headers["user-agent"], Math.round((new Date()).getTime() / 1000))
+        var listenerID = global.streams.listenerTunedIn(req.params.stream, req.processedIP, req.headers["user-agent"], Math.round((new Date()).getTime() / 1000))
         res.writeHead(200, headers);
 
         // setup icy
@@ -267,8 +267,8 @@ export default (app, wrap) => {
     }
 
     const serveM3U8ForStream = async (stream, req, res) => {
-        if (!req.query.id || !global.streams.listenerIdExists(stream, req.query.id, req.ip, req.headers["user-agent"])) {
-            var listenerID = global.streams.listenerTunedIn(stream, req.ip, req.headers["user-agent"], Math.round((new Date()).getTime() / 1000), true)
+        if (!req.query.id || !global.streams.listenerIdExists(stream, req.query.id, req.processedIP, req.headers["user-agent"])) {
+            var listenerID = global.streams.listenerTunedIn(stream, req.processedIP, req.headers["user-agent"], Math.round((new Date()).getTime() / 1000), true)
             if (!global.streams.hlsLastHit[req.params.stream]) {
                 global.streams.hlsLastHit[stream] = {}
             }
