@@ -99,7 +99,7 @@ const addStream = function (inputStream, conf) {
     }
 
     if (global.config.hls) {
-        hlsHanders[conf.stream] = new HLSHandler(inputStreams[conf.stream])
+        hlsHanders[conf.stream] = new HLSHandler(inputStreams[conf.stream], conf.name)
         hlsHanders[conf.stream].start()
     }
 

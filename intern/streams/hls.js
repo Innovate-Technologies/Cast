@@ -8,12 +8,14 @@ export default class HLSHandler {
     tmpobj
     inputStream
     process
+    name = ""
 
-    constructor(inputStream) {
+    constructor(inputStream, name) {
         this.tmpobj = tmp.dirSync();
         this.tempPath = this.tmpobj.name
 
         this.inputStream = inputStream
+        this.name = name
     }
 
     /*
@@ -32,10 +34,11 @@ export default class HLSHandler {
             "-hls_list_size", "5",
             "-hls_wrap", "5",
             "-hls_flags", "delete_segments",
+            "-metadata", `title=${this.name}`,
             `${this.tempPath}/hls.m3u8`
         ],
         { 
-            stdio: ['pipe', process.stdout, process.stdout]
+            stdio: ['pipe', null, null]
         });
     
         this.inputStream.pipe(this.process.stdin);
