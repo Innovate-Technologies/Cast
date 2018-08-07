@@ -1,5 +1,6 @@
 import stream from "stream"
 import _ from "underscore"
+import HLSHandler from "./hls"
 
 if (config.geoservices && config.geoservices.enabled && !global.maxmind) {
     global.maxmind = require("maxmind").open(global.config.geoservices.maxmindDatabase)
@@ -24,11 +25,10 @@ let primaryStream = ""
 let latestListenerID = {} // {stream:id}
 
 if (global.config.hls) {
-    var hlsBuffer = {} // {stream:[buffers]}
-    var hlsPool = {} // {stream:{unixtime:song data}}
-    var hlsDeleteCount = {} // {stream:count}
     var hlsLastHit = {} // {stream:{id:unixtime}}
-    var hlsIndexes = {} // {stream:[indexes]}
+    var hlsHanders = {} // {stream:[handler]}
+
+    // handle HLS hits
     setInterval(() => {
         let now = Math.round((new Date()).getTime() / 1000)
         for (let id in streams) {
@@ -99,35 +99,8 @@ const addStream = function (inputStream, conf) {
     }
 
     if (global.config.hls) {
-        hlsDeleteCount[conf.stream] = 0
-
-        inputStreams[conf.stream].on("data", (chunk) => {
-            if (typeof hlsBuffer[conf.stream] === "undefined") {
-                hlsBuffer[conf.stream] = []
-            }
-            hlsBuffer[conf.stream].push(chunk)
-        });
-        var hlsInterval = setInterval(() => {
-            const now = new Date().getTime()
-            if (!hlsPool[conf.stream]) {
-                hlsPool[conf.stream] = {}
-            }
-            if (!hlsIndexes[conf.stream]) {
-                hlsIndexes[conf.stream] = []
-            }
-            hlsPool[conf.stream][now] = Buffer.concat(hlsBuffer[conf.stream])
-            hlsBuffer[conf.stream] = []
-            hlsIndexes[conf.stream].push(now)
-            if (hlsIndexes[conf.stream].length > 7) {
-                hlsIndexes[conf.stream] = hlsIndexes[conf.stream].slice(1, hlsIndexes.length)
-                hlsDeleteCount[conf.stream]++
-            }
-            for (var id in hlsPool[conf.stream]) {
-                if (id < now - (5000 * 20)) {
-                    delete hlsPool[conf.stream][id]
-                }
-            }
-        }, 5000)
+        hlsHanders[conf.stream] = new HLSHandler(inputStreams[conf.stream])
+        hlsHanders[conf.stream].start()
     }
 
 
@@ -171,6 +144,9 @@ const removeStream = (streamName) => {
     streamConf = _.omit(streamConf, streamName)
     streamMetadata = _.omit(streamMetadata, streamName)
     streamListeners = _.omit(streamListeners, streamName)
+    if (global.config.hls && hlsHanders[conf.stream]) {
+        hlsHanders[conf.stream].stop()
+    }
     events.emit("removeStream", streamName)
 }
 
@@ -366,7 +342,5 @@ module.exports.getPastMedatada = getPastMedatada
 module.exports.configFileInfo = configFileInfo
 module.exports.streamID = streamID
 module.exports.endStream = endStream
-module.exports.hlsPool = hlsPool
-module.exports.hlsIndexes = hlsIndexes
+module.exports.hlsHanders = hlsHanders
 module.exports.hlsLastHit = hlsLastHit
-module.exports.hlsDeleteCount = hlsDeleteCount

@@ -1,6 +1,9 @@
 import fs from "fs"
 const app = require("express")()
 
+// Used in route handlers to catch async exceptions as if they were synchronous.
+const wrap = fn => (...args) => fn(...args).catch(args[2]);
+
 global.io = require("socket.io")()
 
 if (config.httpsPort !== 0) {
@@ -39,7 +42,7 @@ fs.stat(global.localdir + "/hooks/http/", (err) => {
     }
 })
 
-streamOutput(app)
+streamOutput(app, wrap)
 streamInput(global.config)
 
 module.exports = app
