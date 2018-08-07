@@ -11,7 +11,6 @@ export default class HLSHandler {
     constructor(inputStream) {
         var tmpobj = tmp.dirSync();
         this.tempPath = tmpobj.name
-        console.log('Dir: ', tmpobj.name);
 
         this.inputStream = inputStream
     }
