@@ -5,12 +5,13 @@ import { spawn } from "child_process"
 export default class HLSHandler {
 
     tempPath = ""
+    tmpobj
     inputStream
     process
 
     constructor(inputStream) {
-        var tmpobj = tmp.dirSync();
-        this.tempPath = tmpobj.name
+        this.tmpobj = tmp.dirSync();
+        this.tempPath = this.tmpobj.name
 
         this.inputStream = inputStream
     }
@@ -42,5 +43,6 @@ export default class HLSHandler {
 
     stop() {
         this.process.kill()
+        this.tmpobj.removeCallback()
     }
 }
