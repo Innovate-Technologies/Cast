@@ -154,10 +154,12 @@ export default (app, wrap) => {
                 servePLS(req, res)
                 return
             }
+            
             if (req.params.stream.split(".")[1] === "m3u") {
                 serveM3U(req, res)
                 return
             }
+
             if (req.params.stream.split(".")[1] === "m3u8" && global.config.hls) {
                 serveM3U8(req, res)
                 return
