@@ -7,7 +7,7 @@ import { spawn } from "child_process"
 const unlink = util.promisify(fs.unlink)
 const readdir = util.promisify(fs.readdir)
 
-const KEEP_SEGMENTS = 10
+const KEEP_SEGMENTS = 20
 const chunkRegex = new RegExp(/chunk-stream0-(.*).m4s/)
 
 export default class DASHHandler {
