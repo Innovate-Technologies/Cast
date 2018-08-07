@@ -280,6 +280,7 @@ export default (app, wrap) => {
         let playlist = await readFile(`${global.streams.hlsHanders[stream].tempPath}/hls.m3u8`, "utf8")
         playlist = playlist.replace(/\.ts/g, `.ts?id=${req.query.id}`)
 
+        res.setHeader("Cache-Control", "max-age=0, no-cache, no-store")
         res.type("application/vnd.apple.mpegurl").send(playlist)
     }
 
