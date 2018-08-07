@@ -1,6 +1,6 @@
 import tmp from "tmp"
 import { spawn } from "child_process"
-
+import rimraf from "rimraf"
 
 export default class HLSHandler {
 
@@ -46,6 +46,6 @@ export default class HLSHandler {
 
     stop() {
         this.process.kill()
-        this.tmpobj.removeCallback()
+        rimraf(this.tempPath)
     }
 }

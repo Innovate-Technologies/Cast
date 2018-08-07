@@ -1,6 +1,7 @@
 import fs from "fs"
 import util from "util"
 import tmp from "tmp"
+import rimraf from "rimraf"
 import { spawn } from "child_process"
 
 const unlink = util.promisify(fs.unlink)
@@ -57,7 +58,7 @@ export default class DASHHandler {
 
     stop() {
         this.process.kill()
-        this.tmpobj.removeCallback()
+        rimraf(this.tempPath)
     }
 
     async deleteOldChunks() {
