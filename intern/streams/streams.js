@@ -151,10 +151,10 @@ const removeStream = (streamName) => {
     streamConf = _.omit(streamConf, streamName)
     streamMetadata = _.omit(streamMetadata, streamName)
     if (global.config.hls && hlsHanders[streamName]) {
-        hlsHanders[conf.stream].stop()
+        hlsHanders[streamName].stop()
     }
     if (global.config.dash && dashHanders[streamName]) {
-        dashHanders[conf.stream].stop()
+        dashHanders[streamName].stop()
     }
     //streamListeners = _.omit(streamListeners, streamName)
     events.emit("removeStream", streamName)
