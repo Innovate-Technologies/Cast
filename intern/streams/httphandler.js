@@ -162,6 +162,11 @@ export default (app, wrap) => {
                 serveM3U8(req, res)
                 return
             }
+            
+            if (req.params.stream.split(".")[1] === "mpd" && global.config.dash) {
+                serveMPD(req, res)
+                return
+            }
         }
 
         if (!global.streams.streamExists(req.params.stream)) {
@@ -317,6 +322,15 @@ export default (app, wrap) => {
 
         res.setHeader("Cache-Control", "max-age=0, no-cache, no-store")
         res.type("application/vnd.apple.mpegurl").send(playlist)
+    }
+
+    const serveMPD = (req, res) => {
+        let stream = req.params.stream.split(".")[0]
+        if (!stream || !global.streams.streamExists(stream)) {
+            return res.status(404).send("Stream not found")
+        }
+
+        return res.redirect(`/dash/${stream}/dash.mpd`);
     }
 
     const serveMPDForStream = async (stream, req, res) => {
