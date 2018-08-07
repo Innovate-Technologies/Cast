@@ -58,7 +58,7 @@ export default class DASHHandler {
 
     stop() {
         this.process.kill()
-        rimraf(this.tempPath)
+        rimraf(this.tempPath, () => {})
     }
 
     async deleteOldChunks() {
