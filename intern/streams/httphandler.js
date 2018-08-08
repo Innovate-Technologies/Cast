@@ -319,8 +319,27 @@ export default (app, wrap) => {
             return res.redirect(`/hls/${stream}/hls.m3u8?id=${listenerID}`);
         }
         global.streams.hlsLastHit[stream][req.query.id] = Math.round((new Date()).getTime() / 1000)
+
+        let gotPlaylist
+        let failCount = 0
+        let playlist = ""
+        while (!gotPlaylist) { // keep reading till success
+            try {
+                playlist = await readFile(`${global.streams.hlsHanders[stream].tempPath}/hls.m3u8`, "utf8")
+            } catch (error) {
+                gotPlaylist = false
+                await sleep(100)
+                failCount++
+                if (failCount > 60) {
+                    break
+                }
+            }
+        }
         
-        let playlist = await readFile(`${global.streams.hlsHanders[stream].tempPath}/hls.m3u8`, "utf8")
+        if (!playlist) {
+            return res.status(404).send("File not found")
+        }
+        
         playlist = playlist.replace(/\.ts/g, `.ts?id=${req.query.id}`)
 
         res.setHeader("Cache-Control", "max-age=0, no-cache, no-store")
@@ -347,7 +366,26 @@ export default (app, wrap) => {
         }
         global.streams.hlsLastHit[stream][req.query.id] = Math.round((new Date()).getTime() / 1000)
 
-        let playlist = await readFile(`${global.streams.dashHanders[stream].tempPath}/dash.mpd`, "utf8")
+        let gotPlaylist
+        let failCount = 0
+        let playlist = ""
+        while (!gotPlaylist) { // keep reading till success
+            try {
+                playlist = await readFile(`${global.streams.dashHanders[stream].tempPath}/dash.mpd`, "utf8")
+            } catch (error) {
+                gotPlaylist = false
+                await sleep(100)
+                failCount++
+                if (failCount > 60) {
+                    break
+                }
+            }
+        }
+        
+        if (!playlist) {
+            return res.status(404).send("File not found")
+        }
+
         //playlist = playlist.replace(/duration="\d*" /g, ``)
         playlist = playlist.replace(/\.m4s/g, `.m4s?id=${req.query.id}`)
         playlist = playlist.replace(/startNumber="\d*"/g, `startnumber="${global.streams.dashHanders[stream].oldestChunk}"`)
@@ -356,4 +394,5 @@ export default (app, wrap) => {
         res.type("application/dash+xml").send(playlist)
     }
 
+    const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 }
