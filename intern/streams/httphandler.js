@@ -73,6 +73,7 @@ export default (app, wrap) => {
         }
         if (!global.streams.streamExists(req.params.stream)) {
             return res.status(404).send("Stream not found")
+
         }
 
         if (req.params.file.split(".")[1] === "m3u8") {

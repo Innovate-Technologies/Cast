@@ -150,6 +150,7 @@ const removeStream = (streamName) => {
     streams = _.omit(streams, streamName)
     streamConf = _.omit(streamConf, streamName)
     streamMetadata = _.omit(streamMetadata, streamName)
+  
     if (global.config.hls && hlsHanders[streamName]) {
         hlsHanders[streamName].stop()
     }
@@ -238,7 +239,7 @@ const listenerTunedIn = (streamName, ip, client, starttime, hls) => {
             info.location = {
                 "latitude": ipInfo.location.latitude,
                 "longitude": ipInfo.location.longitude,
-                "accuracy": ipInfo.location.accuracy_radius,
+                "accuracy": ipInfo.location.accuracy_radius,git rebase --abort
             }
         }
     }
