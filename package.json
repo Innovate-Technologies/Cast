@@ -29,6 +29,7 @@
     "http-stack": "~0.1.3",
     "http2": "~3.3.7",
     "maxmind": "^1.3.0",
+    "ogg": "git+https://github.com/meyskens/node-ogg.git",
     "pug": "^2.0.3",
     "restler": "~3.4.0",
     "rimraf": "^2.6.2",
