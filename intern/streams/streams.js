@@ -2,6 +2,7 @@ import stream from "stream"
 import _ from "underscore"
 import HLSHandler from "./hls"
 import DASHHandler from "./dash"
+import AudioHandler from "./audio"
 
 if (config.geoservices && config.geoservices.enabled && !global.maxmind) {
     global.maxmind = require("maxmind").open(global.config.geoservices.maxmindDatabase)
@@ -19,11 +20,10 @@ let streamPasswords = {} // {pass:Stream}
 let streamMetadata = {} // {streamname:{Meta}}
 let streamPastMetadata = {} // {streamname:[{Meta}]}
 let streamListeners = {} // {stream:[{listener}]}
-let streamPreBuffer = {} // {stream:prebuffer}
-let rateLimitBuffer = {} // {stream:[buffers]}
-let rateLimitingIsEnabled = false
 let primaryStream = ""
 let latestListenerID = {} // {stream:id}
+
+let audioHandlers = {} // {stream:Handler}
 
 if (global.config.hls || global.config.dash) {
     var hlsLastHit = {} // {stream:{id:unixtime}}
@@ -74,31 +74,16 @@ const addStream = function (inputStream, conf) {
         throw new Error("Stream is null")
     }
     conf.name = conf.name || "Not available";
-    streamPreBuffer[conf.stream] = []
 
-    var throttleStream = new stream.PassThrough();
-    throttleStream.setMaxListeners(0); // set soft max to prevent leaks
-    streams[conf.stream] = throttleStream
+    let handler = new AudioHandler()
+    audioHandlers[conf.stream] = handler
+
+    // we will still keep these here as well as in the handlers
+    streams[conf.stream] = handler.throttleStream
     streamConf[conf.stream] = conf
     inputStreams[conf.stream] = inputStream
 
-    if (config.rateLimiting) {
-        rateLimitingIsEnabled = true
-
-        inputStreams[conf.stream].on("data", (chunk) => {
-            if (!rateLimitBuffer[conf.stream]) {
-                rateLimitBuffer[conf.stream] = []
-            }
-            rateLimitBuffer[conf.stream].push(chunk)
-        });
-
-        var rateLimitInterval = setInterval(() => {
-            throttleStream.write(Buffer.concat(rateLimitBuffer[conf.stream]))
-            rateLimitBuffer[conf.stream] = []
-        }, 500)
-    } else {
-        inputStream.pipe(throttleStream);
-    }
+    handler.input(inputStream)
 
     if (global.config.hls) {
         hlsHanders[conf.stream] = new HLSHandler(inputStreams[conf.stream], conf.name)
@@ -110,27 +95,6 @@ const addStream = function (inputStream, conf) {
         dashHanders[conf.stream].start()
     }
 
-
-    throttleStream.on("data", (chunk) => {
-        const newPreBuffer = []
-        const currentLength = streamPreBuffer[conf.stream].length
-        for (let i = (rateLimitingIsEnabled ? 10 : 100); i > 0; i--) {
-            if (streamPreBuffer[conf.stream].hasOwnProperty(currentLength - i)) {
-                newPreBuffer.push(streamPreBuffer[conf.stream][currentLength - i])
-            }
-        }
-        newPreBuffer.push(chunk)
-        streamPreBuffer[conf.stream] = newPreBuffer
-    })
-
-    inputStreams[conf.stream].on("end", () => {
-        streamPreBuffer[conf.stream] = ""
-        if (rateLimitingIsEnabled) {
-            rateLimitBuffer[conf.stream] = []
-            clearInterval(rateLimitInterval)
-            clearInterval(hlsInterval)
-        }
-    })
     events.emit("addStream", conf.stream)
 
 }
@@ -157,6 +121,9 @@ const removeStream = (streamName) => {
     if (global.config.dash && dashHanders[streamName]) {
         dashHanders[streamName].stop()
     }
+
+    audioHandlers[conf.stream] = null
+
     //streamListeners = _.omit(streamListeners, streamName)
     events.emit("removeStream", streamName)
 }
@@ -316,7 +283,7 @@ const realNumberOfUniqueListerners = (streamName) => {
     return getListeners(streamName).length
 }
 const getPreBuffer = (streamName) => {
-    return streamPreBuffer[streamName]
+    return audioHandlers[streamName].prebuffer
 }
 
 const getPastMedatada = (streamName) => {
