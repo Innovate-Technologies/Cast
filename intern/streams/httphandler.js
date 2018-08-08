@@ -327,10 +327,12 @@ export default (app, wrap) => {
             try {
                 playlist = await readFile(`${global.streams.hlsHanders[stream].tempPath}/hls.m3u8`, "utf8")
             } catch (error) {
+                console.log(error)
                 gotPlaylist = false
                 await sleep(100)
                 failCount++
                 if (failCount > 60) {
+                    console.log("fail limit of m3u8 get reached")
                     break
                 }
             }
@@ -373,10 +375,12 @@ export default (app, wrap) => {
             try {
                 playlist = await readFile(`${global.streams.dashHanders[stream].tempPath}/dash.mpd`, "utf8")
             } catch (error) {
+                console.log(error)
                 gotPlaylist = false
                 await sleep(100)
                 failCount++
                 if (failCount > 60) {
+                    console.log("fail limit of mpd get reached")
                     break
                 }
             }
