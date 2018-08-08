@@ -239,7 +239,7 @@ const listenerTunedIn = (streamName, ip, client, starttime, hls) => {
             info.location = {
                 "latitude": ipInfo.location.latitude,
                 "longitude": ipInfo.location.longitude,
-                "accuracy": ipInfo.location.accuracy_radius,git rebase --abort
+                "accuracy": ipInfo.location.accuracy_radius,
             }
         }
     }
