@@ -127,7 +127,7 @@ const removeStream = (streamName) => {
         dashHanders[streamName].stop()
     }
 
-    audioHandlers[conf.stream] = null
+    audioHandlers[streamName] = null
 
     //streamListeners = _.omit(streamListeners, streamName)
     events.emit("removeStream", streamName)
