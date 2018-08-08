@@ -32,8 +32,8 @@ export default class HLSHandler {
             "-codec", "copy",
             "-hls_time", "9",
             "-hls_segment_filename", `${this.tempPath}/seq%03d.ts`,
-            "-hls_list_size", "5",
-            "-hls_wrap", "5",
+            "-hls_list_size", "7",
+            "-hls_wrap", "20",
             "-hls_flags", "delete_segments+program_date_time",
             "-metadata", `title=${this.name}`,
             `${this.tempPath}/hls.m3u8`
