@@ -104,7 +104,7 @@ const listener = tcp.createServer((c) => {
                 return c.end()
             }
 
-            if (info.contentType !== "audio/mpeg" && info.contentType !== "audio/aacp") {
+            if (info.contentType !== "audio/mpeg" && info.contentType !== "audio/aacp" && info.contentType !== "application/ogg") {
                 c.write("HTTP/1.1 403 Content-type not supported\n\n")
                 return c.end()
             }
