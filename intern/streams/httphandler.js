@@ -326,6 +326,7 @@ export default (app, wrap) => {
         while (!gotPlaylist) { // keep reading till success
             try {
                 playlist = await readFile(`${global.streams.hlsHanders[stream].tempPath}/hls.m3u8`, "utf8")
+                gotPlaylist = true
             } catch (error) {
                 console.log(error)
                 gotPlaylist = false
@@ -374,6 +375,7 @@ export default (app, wrap) => {
         while (!gotPlaylist) { // keep reading till success
             try {
                 playlist = await readFile(`${global.streams.dashHanders[stream].tempPath}/dash.mpd`, "utf8")
+                gotPlaylist = true
             } catch (error) {
                 console.log(error)
                 gotPlaylist = false
