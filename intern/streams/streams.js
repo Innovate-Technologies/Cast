@@ -177,7 +177,7 @@ const getActiveStreams = () => {
     const returnStreams = []
     for (let id in streamConf) {
         if (streamConf.hasOwnProperty(id)) {
-            streamConf.push(id)
+            returnStreams.push(id)
         }
     }
     returnStreams.sort()
