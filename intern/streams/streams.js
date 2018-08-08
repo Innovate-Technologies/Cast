@@ -1,7 +1,7 @@
 import stream from "stream"
 import _ from "underscore"
 import HLSHandler from "./hls"
-import DASHandler from "./dash"
+import DASHHandler from "./dash"
 
 if (config.geoservices && config.geoservices.enabled && !global.maxmind) {
     global.maxmind = require("maxmind").open(global.config.geoservices.maxmindDatabase)
@@ -106,7 +106,7 @@ const addStream = function (inputStream, conf) {
     }
 
     if (global.config.dash) {
-        dashHanders[conf.stream] = new DASHandler(inputStreams[conf.stream], conf.name)
+        dashHanders[conf.stream] = new DASHHandler(inputStreams[conf.stream], conf.name)
         dashHanders[conf.stream].start()
     }
 
