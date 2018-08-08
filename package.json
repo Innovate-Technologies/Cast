@@ -11,7 +11,7 @@
   "homepage": "https://github.com/innovate-yechnologies/Cast",
   "dependencies": {
     "babel-plugin-add-module-exports": "^0.3.1",
-    "babel-polyfill": "^6.9.1",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-es2015-mod": "^6.6.0",
     "babel-preset-node6": "^11.0.0",
     "babel-preset-stage-2": "^6.24.1",
