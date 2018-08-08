@@ -22,7 +22,7 @@ export const relayStream = (desinationStream, relayUrl) => {
     }, (res) => {
         let useicy = false;
         let metadataint = 0;
-        if (!res.headers["content-type"] || res.headers["content-type"].indexOf("audio/") !== 0) {
+        if (!res.headers["content-type"] || (res.headers["content-type"].indexOf("audio/") !== 0 && res.headers["content-type"] !== "application/ogg")) {
             setTimeout(relayStream, 10000, desinationStream, relayUrl)
             return console.log(`${relayUrl} doesn't serve audio`)
         }
