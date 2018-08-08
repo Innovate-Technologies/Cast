@@ -64,5 +64,8 @@ export default class AudioHandler {
         })
     }
 
+    getStream() {
+        return this.throttleStream
+    }
 
 }

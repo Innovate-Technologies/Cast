@@ -3,6 +3,7 @@ import _ from "underscore"
 import HLSHandler from "./hls"
 import DASHHandler from "./dash"
 import AudioHandler from "./audio"
+import OGGHandler from "./ogg"
 
 if (config.geoservices && config.geoservices.enabled && !global.maxmind) {
     global.maxmind = require("maxmind").open(global.config.geoservices.maxmindDatabase)
@@ -14,7 +15,6 @@ if (config.geoservices && config.geoservices.enabled && !global.maxmind) {
 let configFileInfo = {} // {streamname:conf}
 let streamID = {} // id:streamname
 let inputStreams = {} // {streamname:stream}
-let streams = {} // {streamname:stream}
 let streamConf = {} // {streamname:{conf}}
 let streamPasswords = {} // {pass:Stream}
 let streamMetadata = {} // {streamname:{Meta}}
@@ -33,8 +33,8 @@ if (global.config.hls || global.config.dash) {
     // handle HLS hits
     setInterval(() => {
         let now = Math.round((new Date()).getTime() / 1000)
-        for (let id in streams) {
-            if (streams.hasOwnProperty(id)) {
+        for (let id in streamConf) {
+            if (streamConf.hasOwnProperty(id)) {
                 let listeners = getListeners(id)
                 for (let lid in listeners) {
                     if (listeners.hasOwnProperty(lid)) {
@@ -57,7 +57,7 @@ if (global.config.hls || global.config.dash) {
 }
 
 const streamExists = function (streamname) {
-    return streams.hasOwnProperty(streamname) && stream[streamname] !== null
+    return streamConf.hasOwnProperty(streamname) && stream[streamname] !== null
 }
 
 
@@ -75,11 +75,16 @@ const addStream = function (inputStream, conf) {
     }
     conf.name = conf.name || "Not available";
 
-    let handler = new AudioHandler()
+
+    let handler
+    if (conf.type == "application/ogg") {
+        handler = new OGGHandler()
+    } else {
+        handler = new AudioHandler()
+    }
     audioHandlers[conf.stream] = handler
 
     // we will still keep these here as well as in the handlers
-    streams[conf.stream] = handler.throttleStream
     streamConf[conf.stream] = conf
     inputStreams[conf.stream] = inputStream
 
@@ -100,7 +105,7 @@ const addStream = function (inputStream, conf) {
 }
 
 const getStream = (streamName) => {
-    return streams[streamName]
+    return audioHandlers[streamName].getStream()
 }
 
 const getStreamConf = (streamName) => {
@@ -129,7 +134,7 @@ const removeStream = (streamName) => {
 }
 
 const isStreamInUse = (streamName) => {
-    return streams.hasOwnProperty(streamName)
+    return streamConf.hasOwnProperty(streamName)
 }
 
 const getStreamMetadata = (streamName) => {
@@ -170,9 +175,9 @@ const setStreamMetadataNow = (streamName, data) => {
 
 const getActiveStreams = () => {
     const returnStreams = []
-    for (let id in streams) {
-        if (streams.hasOwnProperty(id)) {
-            returnStreams.push(id)
+    for (let id in streamConf) {
+        if (streamConf.hasOwnProperty(id)) {
+            streamConf.push(id)
         }
     }
     returnStreams.sort()
