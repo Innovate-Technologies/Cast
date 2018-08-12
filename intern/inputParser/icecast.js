@@ -61,7 +61,10 @@ const listener = tcp.createServer((c) => {
     
         if (!gotHeaders) {
         let request = input.split("\n")
-        let indexOfAuth
+        if (request.length <= 2) {
+            return // no headers here
+        }
+        let indexOfAuth = -1
         let continueNeeded = false
         for (let id in request) {
             if (request.hasOwnProperty(id)) {
@@ -91,7 +94,7 @@ const listener = tcp.createServer((c) => {
                 }
             }
         }
-        if (!indexOfAuth) {
+        if (indexOfAuth === -1) {
             c.write("HTTP/1.1 401 You need to authenticate\n\n")
             return c.end()
         }
@@ -121,7 +124,7 @@ const listener = tcp.createServer((c) => {
         gotHeaders = true
     }
 
-    if (gotRequest && gotHeaders && !startedPipe) {
+    if (gotRequest && gotHeaders && !startedPipe && stream) {
         streams.addStream(c, {
             name: info.name,
             stream: stream,
