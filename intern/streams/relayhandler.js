@@ -6,7 +6,7 @@ export const relayStream = (desinationStream, relayUrl) => {
     let http
     let gotData = false;
     const urlInfo = url.parse(relayUrl)
-    if (urlInfo.protocol === "https:") {
+    if (urlInfo.protocol === "https") {
         http = require("https")
     } else {
         http = require("http")
@@ -71,20 +71,26 @@ export const relayStream = (desinationStream, relayUrl) => {
         })
 
         inputStream.on("end", () => {
+            console.log("Got end on of stream")
             outputStream.end()
             streams.removeStream(desinationStream)
             setTimeout(relayStream, 10000, desinationStream, relayUrl)
         })
 
-        const checkInterval = setInterval(() => { // check every 5 seconds to see if we got new data
+        inputStream.on("error", (err) => {
+            console.log("Got error from relaying server", err)
+        })
+
+        const checkInterval = setInterval(() => { // check every 10 seconds to see if we got new data
             if (!gotData) {
+                console.log("Got no data from relaying server in 10 seconds")
                 inputStream.destroy()
                 clearInterval(checkInterval)
             }
             gotData = false
-        }, 5000)
+        }, 10000)
     }).on("error", (e) => {
-        console.error(e);
+        console.log(e);
     });
 }
 

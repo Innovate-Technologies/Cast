@@ -39,10 +39,13 @@ export default class HLSHandler {
             `${this.tempPath}/hls.m3u8`
         ],
         { 
-            stdio: ['pipe', null, null]
+            stdio: ['pipe', null, process.stderr]
         });
+
+        this.process.stdin.on('error', (...args) => { console.log('stdin err hls', args); });
     
-        this.inputStream.pipe(this.process.stdin);
+        //this.inputStream.pipe(this.process.stdin);
+        this.inputStream.on("data", data => this.process.stdin.write(data))
     }
 
     stop() {

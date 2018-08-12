@@ -75,7 +75,6 @@ const addStream = function (inputStream, conf) {
     }
     conf.name = conf.name || "Not available";
 
-
     let handler
     if (conf.type == "application/ogg") {
         handler = new OGGHandler()
@@ -298,7 +297,7 @@ const getPastMedatada = (streamName) => {
 
 const endStream = (streamName) => {
     if (isStreamInUse(streamName)) {
-        inputStreams[stream].destroy();
+        inputStreams[stream].end();
     }
 }
 

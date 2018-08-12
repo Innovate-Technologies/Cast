@@ -49,10 +49,13 @@ export default class DASHHandler {
             `${this.tempPath}/dash.mpd`
         ],
         { 
-            stdio: ['pipe', null, null]
+            stdio: ['pipe', null, process.stderr]
         });
-    
-        this.inputStream.pipe(this.process.stdin);
+        
+        this.process.stdin.on('error', (...args) => { console.log('stdin err dash', args); });
+
+        //this.inputStream.pipe(this.process.stdin);
+        this.inputStream.on("data", data => this.process.stdin.write(data))
         this.chunkTimer = setInterval(this.deleteOldChunks.bind(this), 10000)
     }
 
