@@ -6,7 +6,7 @@ export const relayStream = (desinationStream, relayUrl) => {
     let http
     let gotData = false;
     const urlInfo = url.parse(relayUrl)
-    if (urlInfo.protocol === "https") {
+    if (urlInfo.protocol === "https:") {
         http = require("https")
     } else {
         http = require("http")
@@ -22,7 +22,7 @@ export const relayStream = (desinationStream, relayUrl) => {
     }, (res) => {
         let useicy = false;
         let metadataint = 0;
-        if (!res.headers["content-type"] || (res.headers["content-type"].indexOf("audio/") !== 0 && res.headers["content-type"] !== "application/ogg")) {
+        if (!res.headers["content-type"] || (res.headers["content-type"].indexOf("audio/") !== 0 && res.headers["content-type"] !== "application/ogg" && res.headers["content-type"] !== "audio/ogg")) {
             setTimeout(relayStream, 10000, desinationStream, relayUrl)
             return console.log(`${relayUrl} doesn't serve audio`)
         }
