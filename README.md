@@ -60,8 +60,7 @@ We introduce a ***gorgeous*** streaming page with an equally gorgeous UI.
 (does anyone remember who's famous for singing that?) Anyway, like everything... Cast does have a few downfalls for its humble version 1.0. Listed below are these limitations and alternatives and/or what we're planning to do to eliminate those in upcoming versions.
 
 * *Handling large amounts of listeners*: Big audience? Cast isn't built to cater for large amounts of listeners. For this, it's best to stick with Icecast (we're plannning to accommodate you guys soon!).
-* *No support for OGG*: B-_OGG_ OFF! Cast 1.0 doesn't support OGG streaming, we're super sorry about that and of course we are planning to implement this at a later date. Until then, you're best off with Icecast which supports everything OGG.
-* *No support for ad insertion*: You must be M _ad_ (get it?) to think we support that yet. Sadly, Cast 1.0 doesn't support the insertion of ads yet. SHOUTcast (or Icecast KH) will do the job nicely.
+* *No support for ad insertion*: You must be M _ad_ (get it?) to think we support that yet. Sadly, Cast 1.0 doesn't support the insertion of ads yet. SHOUTcast (or Icecast KH) will do the job nicely. Are you a provider of radio ad insertion? Feel free to drop an issue to help you integrate a solution!
 * *Resource usage*: Cast 1.0 is a little tough on old hardware at the minute. Because Cast is still being streamlined to perfection, it's a little heavy on memory. Whilst load levels won't be severe, you might have better loads using Icecast or SHOUTcast.
 * *No support for statistics*: Cast 1.0 currently has no statistics yet. We're working on building these in before the final version.
 
