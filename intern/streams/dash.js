@@ -49,7 +49,7 @@ export default class DASHHandler {
             `${this.tempPath}/dash.mpd`
         ],
         { 
-            stdio: ['pipe', null, process.stderr]
+            stdio: ['pipe', 'ignore', 'ignore']
         });
         
         this.process.stdin.on('error', (...args) => { console.log('stdin err dash', args); });
