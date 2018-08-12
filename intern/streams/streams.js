@@ -76,7 +76,7 @@ const addStream = function (inputStream, conf) {
     conf.name = conf.name || "Not available";
 
     let handler
-    if (conf.type == "application/ogg") {
+    if (conf.type == "application/ogg" || conf.type == "audio/ogg") {
         handler = new OGGHandler()
     } else {
         handler = new AudioHandler()
