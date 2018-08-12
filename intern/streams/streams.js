@@ -89,12 +89,12 @@ const addStream = function (inputStream, conf) {
 
     handler.input(inputStream)
 
-    if (global.config.hls) {
+    if (global.config.hls && conf.type !== "application/ogg") { // OGG is not supported in HLS
         hlsHanders[conf.stream] = new HLSHandler(inputStreams[conf.stream], conf.name)
         hlsHanders[conf.stream].start()
     }
 
-    if (global.config.dash) {
+    if (global.config.dash && conf.type !== "application/ogg") { // OGG is not supported in DASH
         dashHanders[conf.stream] = new DASHHandler(inputStreams[conf.stream], conf.name)
         dashHanders[conf.stream].start()
     }
