@@ -21,16 +21,20 @@ const listener = tcp.createServer((c) => {
             const request = input.split(" ")
             if (request[0] === "SOURCE" || request[0] === "PUT") {
                 gotRequest = true
-            } else {
+            }
+            if (gotRequest) {
+                console.log(request)
                 let requestArray = input.split("\n")
                 let url = request[1]
                 let updateStream
                 for (let header of requestArray) {
+                    console.log(header)
                     if (header.toLowerCase().includes("authorization")) {
                         let authBuffer = Buffer.from(header.split(":")[1].replace("Basic", "").trim(), "base64")
                         let authArray = authBuffer.toString().split(":")
                         delete authArray[0]
                         let password = authArray.join("")
+                        console.log(password)
                         if (!streams.streamPasswords.hasOwnProperty(password)) {
                             c.write("HTTP/1.1 401 You need to authenticate\n\n")
                             return c.end()
