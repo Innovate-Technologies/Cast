@@ -6,7 +6,7 @@ export default class OGGHandler {
 
     // needed by othe compoments
     prebuffer = [] // very important as this will eep the first packet
-    
+
     // internal
     throttleStream
     inputStream
@@ -27,7 +27,7 @@ export default class OGGHandler {
     input(inputStream) {
         this.inputStream = inputStream
         inputStream.pipe(this.decoder);
-        
+
         this.decoder.on('stream', (stream) => {
             if (!this.oggStream) {
                 this.oggStream = stream
@@ -54,15 +54,18 @@ export default class OGGHandler {
     }
 
     packetPreBufferWorker() {
-        this.throttleStream.on("packet", (packet) => {
-            const newPrebuffer = []
-            newPrebuffer.push(this.fistPacketBuffer)
-            const currentLength = this.packetPreBuffer.length
-            for (let i = 300; i > 0; i--) {
-                if (this.packetPreBuffer.hasOwnProperty(currentLength - i)) {
-                    newPrebuffer.push(this.packetPreBuffer[currentLength - i])
-                }
+        this.throttleStream.on("data", (packet) => {
+            if (!this.fistPacketBuffer) {
+                return
             }
+            const newPrebuffer = [this.fistPacketBuffer]
+
+            if (this.prebuffer.length < 20) {
+                newPrebuffer.push(...this.prebuffer)
+            } else {
+                newPrebuffer.push(...this.prebuffer.slice(this.prebuffer.length - 20, this.prebuffer.length))
+            }
+      
             newPrebuffer.push(packet)
             this.prebuffer = newPrebuffer
         })
@@ -70,7 +73,7 @@ export default class OGGHandler {
 
     endWorker() {
         this.inputStream.on("end", () => {
-            streampacketPreBufferpacketPreBuffer = ""
+            this.prebuffer = []
         })
     }
 
@@ -88,6 +91,7 @@ export default class OGGHandler {
         })
 
         outStream.flush()
+        outStream.end()
     }
 
     errorCatcher() {
