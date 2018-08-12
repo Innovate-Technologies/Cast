@@ -57,7 +57,7 @@ export default class AudioHandler {
 
     endWorker() {
         this.inputStream.on("end", () => {
-            streamPreBufferprebuffer = ""
+            this.prebuffer = []
             if (config.rateLimiting) {
                 this.rateLimitBuffer = []
                 clearInterval(this.rateLimitInterval)
