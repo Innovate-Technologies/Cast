@@ -49,6 +49,7 @@ export default class OGGHandler {
             }).bind(this));
 
             this.endWorker()
+            this.errorCatcher()
         })
     }
 
@@ -87,6 +88,11 @@ export default class OGGHandler {
         })
 
         outStream.flush()
+    }
+
+    errorCatcher() {
+        this.inputStream.on("error", err => console.log("input stream error", err))
+        this.throttleStream.on("error", err => console.log("throttle stream error", err))
     }
 
     getStream() {

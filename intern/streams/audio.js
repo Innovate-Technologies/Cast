@@ -38,6 +38,7 @@ export default class AudioHandler {
         // start workers
         this.preBufferWorker()
         this.endWorker()
+        this.errorCatcher()
     }
 
     preBufferWorker() {
@@ -62,6 +63,11 @@ export default class AudioHandler {
                 clearInterval(this.rateLimitInterval)
             }
         })
+    }
+
+    errorCatcher() {
+        this.inputStream.on("error", err => console.log("input stream error", err))
+        this.throttleStream.on("error", err => console.log("throttle stream error", err))
     }
 
     getStream() {
