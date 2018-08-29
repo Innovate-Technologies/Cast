@@ -1,4 +1,5 @@
 import fs from "fs"
+import useragent from "express-useragent"
 const app = require("express")()
 
 // Used in route handlers to catch async exceptions as if they were synchronous.
@@ -25,6 +26,8 @@ if (config.trustProxy) {
     app.enable("trust proxy");
 }
 
+app.use(useragent.express())
+
 app.use((req, res, next) => {
     res.setHeader("X-Powered-By", `Cast ${global.cast.version}`)
     res.setHeader("Server", `Cast/${global.cast.version}`)
@@ -35,6 +38,18 @@ app.use((req, res, next) => {
     req.processedIP = req.ip
     if (req.ip && req.ip.match("^::ffff:")) {
         req.processedIP = req.processedIP.replace("::ffff:", "")
+    }
+    next();
+});
+
+app.use((req, res, next) => {
+    if (config.httpsRedirect) {
+        console.log(req.useragent)
+        if (req.useragent.browser && (req.useragent.browser === "Chrome" || req.useragent.browser === "Safari" || req.useragent.browser === "Firefox" || req.useragent.browser === "Webkit" || req.useragent.browser === "IE" || req.useragent.browser === "Edge" || req.useragent.browser === "Opera")) { // probably the first UA selector where IE is seen as "modern"
+            if (req.protocol === "http") {
+                return res.redirect(`https://${req.hostname}${config.httpsPort > 0 && config.httpsPort != 443 ? ":"+config.httpsPort : ""}${req.originalUrl}`);
+            }
+        }
     }
     next();
 });
