@@ -74,7 +74,7 @@ const addStream = function (inputStream, conf) {
         throw new Error("Stream is null")
     }
     
-    if (configFileInfo[conf.stream].titleOverride) {
+    if (configFileInfo[conf.stream] && configFileInfo[conf.stream].titleOverride) {
         conf.name = configFileInfo[conf.stream].titleOverride.replace("%s", conf.name)
     } else {
         conf.name = conf.name || "Not available";

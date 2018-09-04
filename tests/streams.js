@@ -19,10 +19,31 @@ test.beforeEach("setup config", () => {
         "streams": [{
             "stream": "128kbps",
             "password": "password",
+        },
+        {
+            "stream": "override",
+            "password": "password",
+            "titleOverride": "OPENcast featuring %s"
         }],
     }
     global.streams = null
     global.streams = require("../intern/streams/streams.js")
+    for (let id in global.config.streams) {
+        if (global.config.streams.hasOwnProperty(id)) {
+            global.streams.configFileInfo[global.config.streams[id].stream] = global.config.streams[id]
+            global.streams.streamID[id] = global.config.streams[id].stream
+            if (global.config.streams[id].primary) {
+                global.streams.primaryStream = global.config.streams[id].stream
+            }
+            if (global.config.streams[id].relay) {
+                // relay the stream
+                relayHandler.relayStream(global.config.streams[id].stream, global.config.streams[id].relay)
+            } else {
+                // add to password list to accept input
+                global.streams.streamPasswords[global.config.streams[id].password] = global.config.streams[id].stream
+            }
+        }
+    }
     global.events = new Events();
 })
 
@@ -46,6 +67,26 @@ test.serial("test getStreamConf", t => {
     t.deepEqual(global.streams.getStreamConf("128kbps"), testStreamInfo)
 
 })
+
+test.serial("test getStreamConf with title override", t => {
+    const testOverrideInfo = {
+        name: "DrO",
+        stream: "override",
+        type: "audio/mpeg",
+        bitrate: 128,
+        url: "https://getca.st",
+        genre: "Pop",
+        directoryListed: true,
+    }
+
+    global.streams.addStream(new stream.PassThrough(), testOverrideInfo)
+
+    t.is(global.streams.getStreamConf("override").name, "OPENcast featuring DrO")
+
+    global.streams.removeStream("override")
+
+})
+
 
 test.serial("test removeStream", t => {
     global.events.on("removeStream", name => t.is(name, "128kbps"))
