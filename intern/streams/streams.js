@@ -73,7 +73,12 @@ const addStream = function (inputStream, conf) {
     if (!conf.stream) {
         throw new Error("Stream is null")
     }
-    conf.name = conf.name || "Not available";
+    
+    if (configFileInfo[conf.stream].titleOverride) {
+        conf.name = configFileInfo[conf.stream].titleOverride.replace("%s", conf.name)
+    } else {
+        conf.name = conf.name || "Not available";
+    }
 
     let handler
     if (conf.type == "application/ogg" || conf.type == "audio/ogg") {
