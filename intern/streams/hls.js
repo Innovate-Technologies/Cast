@@ -46,10 +46,11 @@ export default class HLSHandler {
     
         //this.inputStream.pipe(this.process.stdin);
         this.inputStream.on("data", data => this.process.stdin.write(data))
+        this.inputStream.on("end", this.stop)
     }
 
     stop() {
-        this.process.kill()
+        this.process.kill("SIGKILL")
         rimraf(this.tempPath, () => {})
     }
 }

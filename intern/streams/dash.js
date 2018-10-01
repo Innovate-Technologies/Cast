@@ -56,11 +56,12 @@ export default class DASHHandler {
 
         //this.inputStream.pipe(this.process.stdin);
         this.inputStream.on("data", data => this.process.stdin.write(data))
+        this.inputStream.on("end", this.stop)
         this.chunkTimer = setInterval(this.deleteOldChunks.bind(this), 10000)
     }
 
     stop() {
-        this.process.kill()
+        this.process.kill("SIGKILL")
         clearInterval(this.chunkTimer)
         rimraf(this.tempPath, () => {})
     }
