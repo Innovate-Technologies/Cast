@@ -73,7 +73,6 @@ export const relayStream = (desinationStream, relayUrl) => {
         inputStream.on("end", () => {
             console.log("Got end on of stream")
             outputStream.end()
-            streams.removeStream(desinationStream)
             setTimeout(relayStream, 10000, desinationStream, relayUrl)
         })
 

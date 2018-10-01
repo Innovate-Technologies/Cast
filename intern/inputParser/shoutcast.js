@@ -72,19 +72,16 @@ const listener = tcp.createServer((c) => {
     })
 
     c.on("end", () => {
-        streams.removeStream(stream)
         stream = null
     })
 
     c.on("error", () => {
         c.end()
-        streams.removeStream(stream)
         stream = null
     })
 
     c.on("timeout", () => {
         c.end()
-        streams.removeStream(stream)
         stream = null
     })
 

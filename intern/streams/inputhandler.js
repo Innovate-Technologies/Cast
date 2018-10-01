@@ -12,6 +12,9 @@ export default (conf) => {
             if (conf.streams[id].relay) {
                 // relay the stream
                 relayHandler.relayStream(conf.streams[id].stream, conf.streams[id].relay)
+                if (conf.streams[id].password) {
+                    global.streams.streamPasswords[conf.streams[id].password] = conf.streams[id].stream
+                }
             } else {
                 // add to password list to accept input
                 global.streams.streamPasswords[conf.streams[id].password] = conf.streams[id].stream
