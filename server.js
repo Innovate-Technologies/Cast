@@ -23,7 +23,7 @@ try {
 try {
     global.cast.version = JSON.parse(fs.readFileSync(global.localdir + "/package.json", "utf8")).version;
 } catch (error) {
-    console.error("Failed to load the config file. Are you sure you have a valid config.json?".red);
+    console.error("Failed to read Cast version. Are you sure you have a valid package.json?".red);
     console.error("The error was:", error.message.grey);
     process.exit(1);
 }
