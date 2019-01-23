@@ -18,7 +18,7 @@
     "babel-register": "^6.26.0",
     "babel-root-import": "^4.0.1",
     "body-parser": "^1.18.3",
-    "bytes": "~3.0.0",
+    "bytes": "~3.1.0",
     "colors": "~1.3.3",
     "errorhandler": "1.5.0",
     "exec-stream": "~0.1.0",
