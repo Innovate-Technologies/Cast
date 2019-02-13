@@ -35,7 +35,7 @@
     "restler": "~3.4.0",
     "rimraf": "^2.6.3",
     "serve-static": "~1.13.0",
-    "snyk": "^1.126.0",
+    "snyk": "^1.129.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
     "stream-stack": "~1.1.4",
