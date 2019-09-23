@@ -20,7 +20,7 @@
     "babel-root-import": "^4.0.1",
     "body-parser": "^1.19.0",
     "bytes": "~3.1.0",
-    "colors": "~1.3.3",
+    "colors": "~1.4.0",
     "errorhandler": "1.5.1",
     "exec-stream": "~0.1.0",
     "express": "^4.17.1",
