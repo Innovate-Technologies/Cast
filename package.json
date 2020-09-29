@@ -54,7 +54,7 @@
   "devDependencies": {
     "ava": "^0.25.0",
     "nyc": "^15.0.1",
-    "sinon": "^7.4.2",
+    "sinon": "^9.1.0",
     "supertest": "^4.0.2"
   },
   "ava": {
