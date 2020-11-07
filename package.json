@@ -43,7 +43,8 @@
     "stream-stack": "~1.1.4",
     "tmp": "0.2.1",
     "underscore": "~1.10.2",
-    "xml": "~1.0.1"
+    "xml": "~1.0.1",
+    "yaml": "^1.10.0"
   },
   "snyk": true,
   "scripts": {

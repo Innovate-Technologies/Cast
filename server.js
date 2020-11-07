@@ -11,13 +11,16 @@ global.localdir = __dirname;
 global.cast = {};
 
 var fs = require("fs");
+var YAML = require('yaml')
 try {
     if (process.argv.length > 2 && fs.statSync(process.argv[process.argv.length - 1]).isFile()) {
         var configFile = process.argv[process.argv.length - 1]
+    } else if (fs.existsSync(global.localdir + "/config.yaml")) {
+        configFile = global.localdir + "/config.yaml"
     }
-    global.config = JSON.parse(fs.readFileSync(configFile || global.localdir + "/config.json", "utf8"));
+    global.config = YAML.parse(fs.readFileSync(configFile || global.localdir + "/config.json", "utf8"));
 } catch (error) {
-    console.error("Failed to load the config file. Are you sure you have a valid config.json?".red);
+    console.error("Failed to load the config file. Are you sure you have a valid config.json or config.yaml?".red);
     console.error("The error was:", error.message.grey);
     process.exit(1);
 }
