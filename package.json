@@ -42,7 +42,7 @@
     "socket.io-client": "^2.3.0",
     "stream-stack": "~1.1.4",
     "tmp": "0.2.1",
-    "underscore": "~1.10.2",
+    "underscore": "~1.12.1",
     "xml": "~1.0.1",
     "yaml": "^1.10.0"
   },
