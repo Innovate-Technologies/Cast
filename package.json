@@ -30,7 +30,7 @@
     "http-parser-js": "^0.5.2",
     "http-stack": "~0.1.3",
     "http2": "~3.3.7",
-    "maxmind": "^2.12.0",
+    "maxmind": "^4.3.2",
     "nan": "^2.14.1",
     "ogg": "git://github.com/meyskens/node-ogg.git",
     "pug": "^2.0.4",
